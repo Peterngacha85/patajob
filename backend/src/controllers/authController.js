@@ -12,15 +12,20 @@ const generateToken = (id) => {
 // @route POST /api/auth/register
 const registerUser = async (req, res) => {
     const { name, email, password, role, whatsapp } = req.body;
+    console.log('Register request for:', email);
     try {
         const userExists = await User.findOne({ email });
-        if (userExists) return res.status(400).json({ message: 'User already exists' });
+        if (userExists) {
+            console.log('User already exists:', email);
+            return res.status(400).json({ message: 'User already exists' });
+        }
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const emailVerificationToken = crypto.randomBytes(20).toString('hex');
 
+        console.log('Creating user in DB...');
         const user = await User.create({ 
             name, 
             email, 
@@ -31,6 +36,7 @@ const registerUser = async (req, res) => {
         });
         
         if (user) {
+            console.log('User created successfully. Preparing verification email...');
             const verificationUrl = `${process.env.FRONTEND_URL}/verify/${emailVerificationToken}`;
             const message = `
                 <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
@@ -47,22 +53,21 @@ const registerUser = async (req, res) => {
                 </div>
             `;
 
-            try {
-                await sendEmail({
-                    email: user.email,
-                    subject: 'Verify your PataJob account',
-                    message,
-                });
-                res.status(201).json({
-                    message: 'Registration successful! Please check your email to verify your account.'
-                });
-            } catch (error) {
-                // If email fails, we might want to delete the user or provide a way to resend
-                console.error('Email Error:', error);
-                res.status(201).json({
-                    message: 'Registration successful, but we failed to send the verification email. Please contact support.'
-                });
-            }
+            // Fire and forget (almost) to prevent hanging user response
+            sendEmail({
+                email: user.email,
+                subject: 'Verify your PataJob account',
+                message,
+            }).then(() => {
+                console.log('Verification email sent to:', user.email);
+            }).catch(err => {
+                console.error('Failed to send verification email to:', user.email, err.message);
+            });
+
+            // Return success immediately
+            return res.status(201).json({
+                message: 'Registration successful! Please check your email to verify your account.'
+            });
         } else {
             res.status(400).json({ message: 'Invalid user data' });
         }
