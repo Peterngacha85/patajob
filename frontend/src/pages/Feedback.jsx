@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { MessageSquare, Lightbulb, Star, Send, CheckCircle2 } from 'lucide-react';
 import api from '../services/api';
 import AuthContext from '../context/AuthContext';
