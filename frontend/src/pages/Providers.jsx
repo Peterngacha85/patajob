@@ -7,6 +7,22 @@ import { MapPin, Star, Phone, Calendar } from 'lucide-react';
 import { COUNTIES, SERVICES } from '../constants/data';
 
 const Providers = () => {
+    const formatWhatsAppLink = (phone) => {
+        if (!phone) return "";
+        let cleaned = phone.replace(/\D/g, '');
+        
+        if (cleaned.startsWith('0')) {
+            cleaned = '254' + cleaned.substring(1);
+        }
+        
+        if (cleaned.length === 9) {
+            cleaned = '254' + cleaned;
+        }
+
+        const message = encodeURIComponent("Hello, I found you on PataJob website and I would like your service assistance.");
+        return `https://api.whatsapp.com/send?phone=${cleaned}&text=${message}`;
+    };
+
     const [searchParams] = useSearchParams();
     const initialService = searchParams.get('service') || '';
     
@@ -156,7 +172,7 @@ const Providers = () => {
                                 </div>
                                 <div className="grid grid-cols-2 gap-3">
                                     <a 
-                                        href={`https://api.whatsapp.com/send?phone=${provider.whatsapp?.replace(/\D/g, '')}&text=${encodeURIComponent("Hello, I found you on PataJob website and I would like your service assistance.")}`} 
+                                        href={formatWhatsAppLink(provider.whatsapp)} 
                                         target="_blank" 
                                         rel="noopener noreferrer"
                                         className="flex items-center justify-center w-full px-4 py-2 border border-green-500 text-green-600 rounded-lg hover:bg-green-50 transition font-medium"
