@@ -51,27 +51,28 @@ const createProviderProfile = async (req, res) => {
 const getProviders = async (req, res) => {
     try {
         const { service, county, town } = req.query;
-        let query = {}; // Show all providers (removed isVerified: true restriction)
-
-        // If admin (check in future), might want to see all. For now strictly public view.
-        // Actually, guide says "Admin dashboard shows... Pending providers". So we need a separate endpoint or control for admin.
-        // This endpoint is for public search.
+        
+        // Strictly show ONLY verified providers to the public
+        let query = { isVerified: true };
 
         if (service) {
-            query.services = { $in: [new RegExp(service, 'i')] };
+            query.services = { $regex: service, $options: 'i' };
         }
         if (county) {
-            query['location.county'] = new RegExp(county, 'i');
+            query['location.county'] = { $regex: county, $options: 'i' };
         }
         if (town) {
-            query['location.town'] = new RegExp(town, 'i');
+            query['location.town'] = { $regex: town, $options: 'i' };
         }
 
-        const providers = await Provider.find(query).populate('userId', ['name', 'email']);
+        const providers = await Provider.find(query)
+            .populate('userId', 'name email')
+            .sort({ createdAt: -1 });
+
         res.json(providers);
     } catch (error) {
-        console.error(error);
-        res.status(500).send('Server Error');
+        console.error("error fetching providers:", error);
+        res.status(500).json({ message: 'Server Error' });
     }
 };
 
