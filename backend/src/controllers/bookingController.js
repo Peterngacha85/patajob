@@ -33,9 +33,19 @@ const getBookings = async (req, res) => {
             // Find provider profile first
             const provider = await Provider.findOne({ userId: req.user.id });
             if (!provider) return res.status(404).json({ message: 'Provider profile not found' });
-            bookings = await Booking.find({ providerId: provider._id }).populate('userId', 'name email').populate('providerId');
+            bookings = await Booking.find({ providerId: provider._id })
+                .populate('userId', 'name email')
+                .populate({
+                    path: 'providerId',
+                    populate: { path: 'userId', select: 'name email' }
+                });
         } else {
-             bookings = await Booking.find({ userId: req.user.id }).populate('providerId').populate('userId', 'name email');
+             bookings = await Booking.find({ userId: req.user.id })
+                .populate('userId', 'name email')
+                .populate({
+                    path: 'providerId',
+                    populate: { path: 'userId', select: 'name email' }
+                });
         }
         res.json(bookings);
     } catch (error) {

@@ -35,8 +35,9 @@ const Navbar = () => {
                             {user.role === 'admin' && <Link to="/admin/dashboard" className="text-primary font-bold hover:opacity-80 transition">Admin Dashboard</Link>}
                             
                             <Link 
-                                to={user.role === 'provider' ? '/provider/dashboard' : '/user/dashboard'} 
+                                to={user.role === 'admin' ? '/admin/dashboard' : user.role === 'provider' ? '/provider/dashboard' : '/user/dashboard'} 
                                 className="text-gray-600 hover:text-primary transition flex items-center gap-1.5"
+                                title="My Profile Settings"
                             >
                                 <UserIcon size={16} />
                                 Profile
@@ -75,8 +76,8 @@ const Navbar = () => {
                     <Link to="/community" className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Community</Link>
                     {user ? (
                         <>
-                            <Link to={user.role === 'provider' ? '/provider/dashboard' : '/user/dashboard'} className="block py-2 text-primary font-bold" onClick={() => setIsOpen(false)}>Dashboard</Link>
-                            <Link to={user.role === 'provider' ? '/provider/dashboard' : '/user/dashboard'} className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>My Profile Setting</Link>
+                            <Link to={user.role === 'admin' ? '/admin/dashboard' : user.role === 'provider' ? '/provider/dashboard' : '/user/dashboard'} className="block py-2 text-primary font-bold" onClick={() => setIsOpen(false)}>Dashboard</Link>
+                            <Link to={user.role === 'admin' ? '/admin/dashboard' : user.role === 'provider' ? '/provider/dashboard' : '/user/dashboard'} className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>My Profile Setting</Link>
                             <button onClick={() => { handleLogout(); setIsOpen(false); }} className="block w-full text-left py-2 text-red-500 font-medium">Logout</button>
                         </>
                     ) : (
