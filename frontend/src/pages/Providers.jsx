@@ -156,7 +156,7 @@ const Providers = () => {
                                 </div>
                                 <div className="grid grid-cols-2 gap-3">
                                     <a 
-                                        href={`https://wa.me/${provider.whatsapp?.replace(/\D/g, '')}?text=Hello%20I%20found%20you%20on%20PataJob%20website%20and%20I%20would%20like%20your%20service%20assistance.`} 
+                                        href={`https://api.whatsapp.com/send?phone=${provider.whatsapp?.replace(/\D/g, '')}&text=${encodeURIComponent("Hello, I found you on PataJob website and I would like your service assistance.")}`} 
                                         target="_blank" 
                                         rel="noopener noreferrer"
                                         className="flex items-center justify-center w-full px-4 py-2 border border-green-500 text-green-600 rounded-lg hover:bg-green-50 transition font-medium"
