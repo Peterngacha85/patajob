@@ -78,9 +78,14 @@ LSM/
    MONGO_URI=your_mongodb_connection_string
    JWT_SECRET=your_jwt_secret
    ```
-4. Start the server:
+4. Start the server (Development):
    ```bash
    npm run dev
+   ```
+
+5. Start the server (Production):
+   ```bash
+   npm start
    ```
 
 ### 2. Frontend Setup
@@ -97,8 +102,17 @@ LSM/
    npm run dev
    ```
 
-## 🛡️ Security
-- Environment variables for sensitive data.
-- JWT-protected private routes.
-- Input validation and role-based authorization.
 - Password hashing with Bcrypt.
+
+## 🚀 Deployment (Render)
+
+### Backend
+1. **Root Directory**: `backend`
+2. **Build Command**: `npm install`
+3. **Start Command**: `npm start`
+4. **Environment Variables**: Add your `.env` variables in the Render dashboard.
+
+### Frontend
+1. **Root Directory**: `frontend`
+2. **Build Command**: `npm install && npm run build`
+3. **Publish Directory**: `frontend/dist` (or `dist` if root dir is `frontend`)
