@@ -3,20 +3,26 @@ import { useNavigate, Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
+import { Loader2 } from 'lucide-react';
 
 const Login = () => {
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+        setLoading(true);
         try {
             await login(formData.email, formData.password);
             navigate('/'); 
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -40,7 +46,14 @@ const Login = () => {
                         onChange={(e) => setFormData({ ...formData, password: e.target.value })} 
                         required 
                     />
-                    <Button type="submit" variant="accent" className="w-full mt-2">Login</Button>
+                    <Button type="submit" variant="accent" className="w-full mt-2 flex items-center justify-center gap-2" disabled={loading}>
+                        {loading ? (
+                            <>
+                                <Loader2 size={20} className="animate-spin" />
+                                Signing in...
+                            </>
+                        ) : 'Login'}
+                    </Button>
                 </form>
                 <div className="mt-6 text-center text-gray-600">
                     Don't have an account? <Link to="/register" className="text-accent font-medium hover:underline">Register</Link>
