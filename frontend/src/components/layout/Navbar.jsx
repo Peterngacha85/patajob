@@ -25,6 +25,7 @@ const Navbar = () => {
                 <div className="hidden md:flex items-center space-x-8 font-medium text-gray-600">
                     <Link to="/" className="hover:text-primary transition">Home</Link>
                     <Link to="/providers" className="hover:text-primary transition">Available Providers</Link>
+                    <Link to="/feedback" className="hover:text-primary transition">Feedback</Link>
                     
                     {user ? (
                         <>
@@ -60,6 +61,7 @@ const Navbar = () => {
                 <div className="md:hidden bg-white border-t border-gray-100 px-6 py-4 space-y-4 shadow-xl absolute w-full left-0">
                     <Link to="/" className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Home</Link>
                     <Link to="/providers" className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Available Providers</Link>
+                    <Link to="/feedback" className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Feedback</Link>
                     {user ? (
                         <>
                             <Link to={user.role === 'provider' ? '/provider/dashboard' : '/user/dashboard'} className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Dashboard</Link>
