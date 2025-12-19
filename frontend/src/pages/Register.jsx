@@ -9,12 +9,16 @@ const Register = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'user' });
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
+        setSuccess('');
         try {
-            await register(formData.name, formData.email, formData.password, formData.role, formData.whatsapp);
-            navigate('/');
+            const res = await register(formData.name, formData.email, formData.password, formData.role, formData.whatsapp);
+            setSuccess(res.message);
+            // navigate('/'); // Stop immediate redirect
         } catch (err) {
             setError(err.response?.data?.message || 'Registration failed');
         }
@@ -25,7 +29,14 @@ const Register = () => {
             <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-gray-100">
                 <h2 className="text-3xl font-bold text-center mb-6 text-primary">Create Account</h2>
                 {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">{error}</div>}
-                <form onSubmit={handleSubmit}>
+                {success && (
+                    <div className="bg-green-100 text-green-800 p-4 rounded-xl mb-6 text-center animate-in fade-in duration-300">
+                        <div className="font-bold mb-1">Check your email!</div>
+                        <div className="text-sm">{success}</div>
+                    </div>
+                )}
+                {!success && (
+                    <form onSubmit={handleSubmit}>
                     <Input 
                         label="Full Name" 
                         value={formData.name} 
@@ -78,6 +89,7 @@ const Register = () => {
 
                     <Button type="submit" variant="accent" className="w-full">Register</Button>
                 </form>
+                )}
                 <div className="mt-6 text-center text-gray-600">
                     Already have an account? <Link to="/login" className="text-accent font-medium hover:underline">Login</Link>
                 </div>

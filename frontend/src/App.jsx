@@ -11,6 +11,7 @@ import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import Feedback from './pages/Feedback';
 import Community from './pages/Community';
+import VerifyEmail from './pages/VerifyEmail';
 import WelcomeModal from './components/modals/WelcomeModal';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/verify/:token" element={<VerifyEmail />} />
               <Route path="/providers" element={<Providers />} />
               <Route path="/user/dashboard" element={<UserDashboard />} />
               <Route path="/provider/dashboard" element={<ProviderDashboard />} />
