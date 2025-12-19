@@ -1,0 +1,304 @@
+🧠 BACKEND-ONLY STEP-BY-STEP AI PROMPT
+Local Services Marketplace (Kenya)
+Node.js · Express · MongoDB · MVC Architecture
+
+You are a Senior Backend Engineer and API Architect.
+
+Build a production-ready backend for a Local Services Marketplace platform where users can find and book verified local service providers (plumbers, electricians, tutors, cleaners, etc.) in Kenya.
+
+You must use Node.js, Express, MongoDB (Mongoose) and follow STRICT MVC architecture.
+
+🔒 GLOBAL RULES (MANDATORY)
+
+Backend ONLY (no frontend)
+
+MVC architecture enforced
+
+RESTful API design
+
+Clean, readable, maintainable code
+
+Async/await only (no callbacks)
+
+Centralized error handling
+
+Environment variables used
+
+Security best practices followed
+
+PHASE 0️⃣ – PROJECT SETUP
+Generate:
+
+package.json with:
+
+express
+
+mongoose
+
+dotenv
+
+bcryptjs
+
+jsonwebtoken
+
+cors
+
+express-validator
+
+morgan
+
+Project structure:
+
+src/
+ ├── controllers/
+ ├── models/
+ ├── routes/
+ ├── middleware/
+ ├── utils/
+ ├── config/
+ └── server.js
+
+
+MongoDB connection file
+
+Express app initialization
+
+Global error handler
+
+.env example
+
+PHASE 1️⃣ – DATABASE MODELS (MONGOOSE)
+
+Create clean, validated schemas with timestamps and indexes.
+
+User Model
+{
+  name: String,
+  email: String (unique),
+  password: String (hashed),
+  role: "user" | "provider" | "admin",
+  createdAt: Date
+}
+
+Provider Model
+{
+  userId: ObjectId (ref User),
+  services: [String],
+  bio: String,
+  location: {
+    county: String,
+    town: String
+  },
+  whatsapp: String,
+  isVerified: Boolean,
+  averageRating: Number,
+  totalReviews: Number,
+  createdAt: Date
+}
+
+Booking Model
+{
+  userId: ObjectId (ref User),
+  providerId: ObjectId (ref Provider),
+  service: String,
+  bookingDate: Date,
+  status: "pending" | "accepted" | "completed" | "cancelled",
+  createdAt: Date
+}
+
+Review Model
+{
+  bookingId: ObjectId,
+  userId: ObjectId,
+  providerId: ObjectId,
+  rating: Number (1–5),
+  comment: String,
+  createdAt: Date
+}
+
+PHASE 2️⃣ – AUTHENTICATION & AUTHORIZATION
+Implement:
+
+User registration
+
+User login
+
+Password hashing (bcrypt)
+
+JWT token generation
+
+Auth middleware
+
+Role-based access middleware
+
+Auth Rules:
+
+Only admins access admin routes
+
+Only providers manage provider profiles
+
+Users cannot review unless booking is completed
+
+PHASE 3️⃣ – AUTH CONTROLLERS & ROUTES
+
+Create:
+
+authController.js
+
+authRoutes.js
+
+Routes:
+
+POST   /api/auth/register
+POST   /api/auth/login
+GET    /api/auth/me
+
+PHASE 4️⃣ – PROVIDER MANAGEMENT
+Provider Controller:
+
+Create provider profile
+
+Update provider profile
+
+Get verified providers
+
+Get single provider by ID
+
+Provider Rules:
+
+Providers appear publicly ONLY if verified
+
+Providers tied to user account
+
+Index services & location for performance
+
+Routes:
+
+POST   /api/providers
+PUT    /api/providers/:id
+GET    /api/providers
+GET    /api/providers/:id
+
+PHASE 5️⃣ – LOCATION SEARCH & FILTERING
+
+Implement:
+
+Filter by:
+
+Service
+
+County
+
+Town
+
+Pagination:
+
+?page=1&limit=10
+
+
+Ensure:
+
+MongoDB indexes used
+
+Efficient query building
+
+PHASE 6️⃣ – BOOKING SYSTEM
+Booking Controller:
+
+Create booking
+
+Provider accepts/rejects booking
+
+User views bookings
+
+Provider views bookings
+
+Booking Status Flow:
+
+pending → accepted → completed
+
+
+Routes:
+
+POST   /api/bookings
+GET    /api/bookings/user
+GET    /api/bookings/provider
+PUT    /api/bookings/:id/status
+
+PHASE 7️⃣ – REVIEWS & RATINGS
+Review Rules:
+
+Only after completed booking
+
+One review per booking
+
+Auto-update provider rating
+
+Routes:
+
+POST   /api/reviews
+GET    /api/reviews/provider/:providerId
+
+PHASE 8️⃣ – ADMIN DASHBOARD LOGIC
+
+Admin Controller:
+
+View pending providers
+
+Approve or reject providers
+
+View all users
+
+Routes:
+
+GET    /api/admin/providers/pending
+PUT    /api/admin/providers/:id/verify
+GET    /api/admin/users
+
+PHASE 9️⃣ – VALIDATION & SECURITY
+
+Implement:
+
+Input validation (express-validator)
+
+Protected routes
+
+Error handling middleware
+
+Clean API responses
+
+PHASE 🔟 – TESTING & DOCUMENTATION
+
+Provide:
+
+Sample API requests (JSON)
+
+Example JWT usage
+
+.env example
+
+Notes on deployment readiness
+
+FINAL OUTPUT REQUIREMENTS
+
+Full backend source code
+
+Clean MVC separation
+
+Readable comments
+
+Production-ready structure
+
+No frontend code
+
+GOAL
+
+Produce a clean, scalable, real-world backend API suitable for:
+
+Portfolio
+
+SaaS expansion
+
+Real Kenyan market use
+
+END PROMPT

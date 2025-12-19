@@ -1,0 +1,399 @@
+🧠 MASTER AI PROMPT
+(Local Services Marketplace – Kenya | MERN | MVC | React + Vite)
+
+You are a Senior Software Engineer and System Architect.
+
+Design and generate a production-ready Local Services Marketplace web application using the MERN stack, strictly following MVC architecture on the backend and React (Vite) on the frontend.
+
+This platform targets Kenya, allowing users to find and book verified local service providers such as plumbers, electricians, tutors, cleaners, etc.
+
+1️⃣ TECH STACK (MANDATORY)
+Backend
+
+Node.js
+
+Express.js
+
+MongoDB + Mongoose
+
+JWT Authentication
+
+Bcrypt for password hashing
+
+MVC Architecture
+
+RESTful API
+
+Environment variables
+
+Proper error handling middleware
+
+Frontend
+
+React (Vite)
+
+Tailwind CSS
+
+React Router
+
+Axios
+
+Context API or Redux Toolkit (choose best)
+
+Mobile-first responsive UI
+
+Deployment (assume later)
+
+Backend: Render
+
+Frontend: Vercel
+
+Database: MongoDB Atlas
+
+2️⃣ SYSTEM ROLES & PERMISSIONS
+User (Client)
+
+Register & login
+
+Browse services
+
+Search by service + location
+
+View provider profiles
+
+Send booking requests
+
+View booking status
+
+Leave reviews after completion
+
+Service Provider
+
+Register & login
+
+Create & edit provider profile
+
+Select offered services
+
+Set location (County + Town)
+
+Provide WhatsApp number
+
+View & respond to booking requests
+
+Must be verified by Admin before appearing publicly
+
+Admin
+
+Login to admin dashboard
+
+View all providers
+
+Approve or reject provider verification
+
+Manage users
+
+Moderate reviews
+
+3️⃣ CORE FEATURES (MVP – MUST IMPLEMENT ALL)
+🔐 Authentication & Authorization
+
+JWT access tokens
+
+Role-based access control middleware
+
+Secure protected routes
+
+Separate dashboards per role
+
+👤 Service Provider Profiles
+
+Each provider profile must include:
+
+Linked user account
+
+Service categories (array)
+
+Short bio/description
+
+Location:
+
+County
+
+Town
+
+WhatsApp contact number
+
+Verification status (Pending / Approved / Rejected)
+
+Average rating (auto-calculated)
+
+Total reviews count
+
+📍 Location-Based Filtering (Kenya-Friendly)
+
+Filter providers by:
+
+Service category
+
+County
+
+Town
+
+Do NOT use GPS in MVP
+
+Use MongoDB indexed queries
+
+📅 Booking System
+
+Users can send booking requests
+
+Booking statuses:
+
+Pending
+
+Accepted
+
+Completed
+
+Cancelled
+
+Providers can accept/reject bookings
+
+Only Completed bookings can be reviewed
+
+⭐ Reviews & Ratings
+
+One review per booking
+
+Rating scale: 1–5
+
+Average rating automatically updated on provider
+
+Reviews visible publicly
+
+🛡 Admin Verification System
+
+Providers are hidden until verified
+
+Admin dashboard shows:
+
+Pending providers
+
+Verified providers
+
+Admin can approve or reject providers
+
+📲 WhatsApp Integration
+
+Generate WhatsApp chat link dynamically:
+
+https://wa.me/254XXXXXXXXX?text=Hello%20I%20found%20your%20service%20on%20[AppName]
+
+
+No WhatsApp API usage required
+
+4️⃣ DATABASE DESIGN (MUST MATCH EXACTLY)
+User Model
+{
+  name: String,
+  email: String,
+  password: String,
+  role: "user" | "provider" | "admin",
+  createdAt: Date
+}
+
+Provider Model
+{
+  userId: ObjectId,
+  services: [String],
+  bio: String,
+  location: {
+    county: String,
+    town: String
+  },
+  whatsapp: String,
+  isVerified: Boolean,
+  averageRating: Number,
+  totalReviews: Number,
+  createdAt: Date
+}
+
+Booking Model
+{
+  userId: ObjectId,
+  providerId: ObjectId,
+  service: String,
+  bookingDate: Date,
+  status: "pending" | "accepted" | "completed" | "cancelled",
+  createdAt: Date
+}
+
+Review Model
+{
+  bookingId: ObjectId,
+  userId: ObjectId,
+  providerId: ObjectId,
+  rating: Number,
+  comment: String,
+  createdAt: Date
+}
+
+5️⃣ BACKEND ARCHITECTURE (STRICT MVC)
+src/
+ ├── controllers/
+ ├── models/
+ ├── routes/
+ ├── middleware/
+ ├── utils/
+ ├── config/
+ └── server.js
+
+Requirements
+
+Controllers contain only business logic
+
+Routes are clean and RESTful
+
+Middleware handles:
+
+Auth
+
+Roles
+
+Errors
+
+Use async/await
+
+Centralized error handling
+
+6️⃣ API DESIGN (RESTFUL)
+
+Generate:
+
+Auth routes
+
+Provider routes
+
+Booking routes
+
+Review routes
+
+Admin routes
+
+Include:
+
+Route definitions
+
+Controller logic
+
+Middleware usage
+
+Request & response examples
+
+7️⃣ FRONTEND STRUCTURE (React + Vite)
+src/
+ ├── components/
+ ├── pages/
+ ├── layouts/
+ ├── context/ (or redux/)
+ ├── services/ (API calls)
+ ├── routes/
+ └── main.jsx
+
+8️⃣ FRONTEND PAGES (ALL REQUIRED)
+Public Pages
+
+Home (service search)
+
+Providers listing
+
+Provider profile
+
+Login / Register
+
+User Dashboard
+
+My bookings
+
+Leave review
+
+Provider Dashboard
+
+Profile management
+
+Booking requests
+
+Admin Dashboard
+
+Provider verification
+
+User management
+
+9️⃣ SEARCH, FILTERING & PAGINATION
+
+Server-side pagination
+
+Query params:
+
+?service=plumber&county=Nairobi&page=1
+
+
+Use MongoDB indexes for performance
+
+🔟 UI & UX RULES
+
+Mobile-first
+
+Clean, professional
+
+Kenya-friendly design
+
+Clear CTAs
+
+Accessible forms
+
+Loading & error states
+
+1️⃣1️⃣ SECURITY BEST PRACTICES
+
+Hash passwords
+
+Validate inputs
+
+Protect admin routes
+
+Hide sensitive data
+
+Use environment variables
+
+1️⃣2️⃣ OUTPUT FORMAT REQUIRED
+
+Generate:
+
+Backend code (MVC)
+
+Frontend code (React + Vite)
+
+Folder structure
+
+Key explanations
+
+Sample API requests
+
+Deployment notes
+
+GOAL
+
+Produce a portfolio-ready, scalable, real-world MERN application that demonstrates:
+
+Clean architecture
+
+Business logic mastery
+
+Modern React practices
+
+Production-level thinking
+
+END PROMPT
+
