@@ -556,7 +556,17 @@ const DataSection = ({ activeTab, setActiveTab }) => {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <button onClick={() => handleDelete(item._id)} className="text-red-500 hover:text-red-700 text-sm font-medium">Remove Provider</button>
+                                            <div className="flex justify-end gap-2 text-sm font-medium">
+                                                {!item.isVerified && (
+                                                    <button 
+                                                        onClick={() => handleVerify(item._id)} 
+                                                        className="text-green-600 hover:text-green-900 px-2 py-1 bg-green-50 rounded"
+                                                    >
+                                                        Approve
+                                                    </button>
+                                                )}
+                                                <button onClick={() => handleDelete(item._id)} className="text-red-500 hover:text-red-700">Remove</button>
+                                            </div>
                                         </td>
                                     </>
                                 )}

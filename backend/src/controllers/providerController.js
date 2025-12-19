@@ -52,8 +52,8 @@ const getProviders = async (req, res) => {
     try {
         const { service, county, town } = req.query;
         
-        // Strictly show ONLY verified providers to the public
-        let query = { isVerified: true };
+        // Temporarily showing all providers while the user verifies admin dashboard functionality
+        let query = {}; // { isVerified: true };
 
         if (service) {
             query.services = { $regex: service, $options: 'i' };
