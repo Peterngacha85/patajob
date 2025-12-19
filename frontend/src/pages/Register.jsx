@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
+import { Loader2 } from 'lucide-react';
 
 const Register = () => {
     const { register } = useContext(AuthContext);
@@ -10,17 +11,21 @@ const Register = () => {
     const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'user' });
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setSuccess('');
+        setLoading(true);
         try {
             const res = await register(formData.name, formData.email, formData.password, formData.role, formData.whatsapp);
             setSuccess(res.message);
             // navigate('/'); // Stop immediate redirect
         } catch (err) {
             setError(err.response?.data?.message || 'Registration failed');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -87,7 +92,14 @@ const Register = () => {
                         </div>
                     </div>
 
-                    <Button type="submit" variant="accent" className="w-full">Register</Button>
+                    <Button type="submit" variant="accent" className="w-full flex items-center justify-center gap-2" disabled={loading}>
+                        {loading ? (
+                            <>
+                                <Loader2 size={20} className="animate-spin" />
+                                Processing...
+                            </>
+                        ) : 'Register'}
+                    </Button>
                 </form>
                 )}
                 <div className="mt-6 text-center text-gray-600">
