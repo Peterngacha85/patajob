@@ -124,7 +124,7 @@ const Home = () => {
             <section className="relative w-full h-[600px] flex items-center justify-center text-center px-4 overflow-hidden">
                 <div className="absolute inset-0 z-0">
                     <img 
-                        src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" 
+                        src="/patajob.png" 
                         alt="Hero Background" 
                         className="w-full h-full object-cover"
                     />
