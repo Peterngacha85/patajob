@@ -57,7 +57,13 @@ const Home = () => {
             setBookingModal({ ...bookingModal, open: false });
             alert('Booking request sent successfully!');
         } catch (error) {
-            alert(error.response?.data?.message || 'Error sending booking request. Ensure you are logged in.');
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                if (window.confirm('Kindly log in to book this service provider. It only takes a minute! Would you like to go to the login page now?')) {
+                    navigate('/login');
+                }
+            } else {
+                alert(error.response?.data?.message || 'Error sending booking request. Please try again.');
+            }
         }
     };
 
