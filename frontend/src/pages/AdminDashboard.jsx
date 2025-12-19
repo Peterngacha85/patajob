@@ -217,7 +217,12 @@ const AdminDashboard = () => {
                 {activeTab === 'profile' ? (
                     <ProfileSection user={user} login={login} />
                 ) : (
-                    <DataSection activeTab={activeTab} setActiveTab={setActiveTab} />
+                    <DataSection 
+                        activeTab={activeTab} 
+                        setActiveTab={setActiveTab} 
+                        onAction={fetchData} 
+                        handleVerify={handleVerify} 
+                    />
                 )}
             </div>
         </div>
@@ -409,7 +414,7 @@ const ProfileSection = ({ user, login }) => {
     );
 };
 
-const DataSection = ({ activeTab, setActiveTab }) => {
+const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -448,10 +453,16 @@ const DataSection = ({ activeTab, setActiveTab }) => {
             
             // Optimistic update
             setData(data.filter(item => item._id !== id));
+            if (onAction) onAction(); // Refresh parent stats
         } catch (error) {
             alert('Error deleting item');
             console.error(error);
         }
+    };
+
+    const handleVerifyAction = async (id) => {
+        await handleVerify(id);
+        fetchData(); // Refresh current list
     };
 
     return (
@@ -559,7 +570,7 @@ const DataSection = ({ activeTab, setActiveTab }) => {
                                             <div className="flex justify-end gap-2 text-sm font-medium">
                                                 {!item.isVerified && (
                                                     <button 
-                                                        onClick={() => handleVerify(item._id)} 
+                                                        onClick={() => handleVerifyAction(item._id)} 
                                                         className="text-green-600 hover:text-green-900 px-2 py-1 bg-green-50 rounded"
                                                     >
                                                         Approve
