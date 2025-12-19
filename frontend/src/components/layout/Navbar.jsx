@@ -33,6 +33,15 @@ const Navbar = () => {
                             {user.role === 'provider' && <Link to="/provider/dashboard" className="text-primary font-bold hover:opacity-80 transition">Dashboard</Link>}
                             {user.role === 'user' && <Link to="/user/dashboard" className="text-primary font-bold hover:opacity-80 transition">My Bookings</Link>}
                             {user.role === 'admin' && <Link to="/admin/dashboard" className="text-primary font-bold hover:opacity-80 transition">Admin Dashboard</Link>}
+                            
+                            <Link 
+                                to={user.role === 'provider' ? '/provider/dashboard' : '/user/dashboard'} 
+                                className="text-gray-600 hover:text-primary transition flex items-center gap-1.5"
+                            >
+                                <UserIcon size={16} />
+                                Profile
+                            </Link>
+
                             <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
                                 <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-primary">
                                     <UserIcon size={18} />
@@ -67,6 +76,7 @@ const Navbar = () => {
                     {user ? (
                         <>
                             <Link to={user.role === 'provider' ? '/provider/dashboard' : '/user/dashboard'} className="block py-2 text-primary font-bold" onClick={() => setIsOpen(false)}>Dashboard</Link>
+                            <Link to={user.role === 'provider' ? '/provider/dashboard' : '/user/dashboard'} className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>My Profile Setting</Link>
                             <button onClick={() => { handleLogout(); setIsOpen(false); }} className="block w-full text-left py-2 text-red-500 font-medium">Logout</button>
                         </>
                     ) : (

@@ -11,12 +11,14 @@ import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import Feedback from './pages/Feedback';
 import Community from './pages/Community';
+import WelcomeModal from './components/modals/WelcomeModal';
 
 function App() {
   return (
     <Router>
       <AuthProvider>
         <div className="min-h-screen flex flex-col bg-gray-50">
+          <WelcomeModal />
           <Navbar />
           <main className="flex-grow">
             <Routes>
