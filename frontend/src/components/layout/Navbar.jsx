@@ -26,6 +26,7 @@ const Navbar = () => {
                     <Link to="/" className="hover:text-primary transition">Home</Link>
                     <Link to="/providers" className="hover:text-primary transition">Available Providers</Link>
                     <Link to="/feedback" className="hover:text-primary transition">Feedback</Link>
+                    <Link to="/community" className="hover:text-primary transition">Community</Link>
                     
                     {user ? (
                         <>
@@ -62,6 +63,7 @@ const Navbar = () => {
                     <Link to="/" className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Home</Link>
                     <Link to="/providers" className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Available Providers</Link>
                     <Link to="/feedback" className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Feedback</Link>
+                    <Link to="/community" className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Community</Link>
                     {user ? (
                         <>
                             <Link to={user.role === 'provider' ? '/provider/dashboard' : '/user/dashboard'} className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Dashboard</Link>

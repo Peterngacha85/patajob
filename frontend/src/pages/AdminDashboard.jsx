@@ -3,7 +3,7 @@ import api from '../services/api';
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
 import AuthContext from '../context/AuthContext';
-import { Users, Briefcase, Calendar, AlertCircle, CheckCircle, XCircle, User } from 'lucide-react';
+import { Users, Briefcase, Calendar, AlertCircle, CheckCircle, XCircle, User, MessageSquare } from 'lucide-react';
 
 const AdminDashboard = () => {
     const { user, login } = useContext(AuthContext); // Use login to update context
@@ -204,6 +204,13 @@ const AdminDashboard = () => {
                     >
                         <User size={16} />
                         Profile
+                    </button>
+                    <button 
+                        onClick={() => setActiveTab('feedback')}
+                        className={`px-6 py-3 font-medium text-sm transition ${activeTab === 'feedback' ? 'border-b-2 border-primary text-primary bg-primary/5' : 'text-gray-500 hover:text-gray-700'} flex items-center gap-2`}
+                    >
+                        <MessageSquare size={16} />
+                        Feedback
                     </button>
                 </div>
 
@@ -414,7 +421,11 @@ const DataSection = ({ activeTab, setActiveTab }) => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const endpoint = activeTab === 'users' ? '/admin/users' : activeTab === 'providers' ? '/admin/providers' : '/admin/bookings';
+            const endpoint = 
+                activeTab === 'users' ? '/admin/users' : 
+                activeTab === 'providers' ? '/admin/providers' : 
+                activeTab === 'bookings' ? '/admin/bookings' :
+                '/api/feedback'; // Feedback route
             const res = await api.get(endpoint);
             setData(res.data);
         } catch (error) {
@@ -428,7 +439,11 @@ const DataSection = ({ activeTab, setActiveTab }) => {
         if (!window.confirm('Are you sure you want to delete this item? This action cannot be undone.')) return;
         
         try {
-            const endpoint = activeTab === 'users' ? `/admin/users/${id}` : activeTab === 'providers' ? `/admin/providers/${id}` : `/admin/bookings/${id}`;
+            const endpoint = 
+                activeTab === 'users' ? `/admin/users/${id}` : 
+                activeTab === 'providers' ? `/admin/providers/${id}` : 
+                activeTab === 'bookings' ? `/admin/bookings/${id}` :
+                `/api/feedback/${id}`; // Feedback route
             await api.delete(endpoint);
             
             // Optimistic update
@@ -469,6 +484,15 @@ const DataSection = ({ activeTab, setActiveTab }) => {
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Client</th>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Service</th>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Date</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
+                                <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Actions</th>
+                            </tr>
+                        )}
+                        {activeTab === 'feedback' && (
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">User</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Type</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Message</th>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
                                 <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Actions</th>
                             </tr>
@@ -544,6 +568,50 @@ const DataSection = ({ activeTab, setActiveTab }) => {
                                         <td className="px-6 py-4 text-sm text-gray-500 capitalize">{item.status}</td>
                                         <td className="px-6 py-4 text-right">
                                             <button onClick={() => handleDelete(item._id)} className="text-red-500 hover:text-red-700 text-sm font-medium">Delete</button>
+                                        </td>
+                                    </>
+                                )}
+                                {activeTab === 'feedback' && (
+                                    <>
+                                        <td className="px-6 py-4">
+                                            <div className="text-sm font-medium text-gray-900">{item.name}</div>
+                                            <div className="text-sm text-gray-500">{item.email}</div>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-gray-500 capitalize">{item.type}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" title={item.content}>{item.content}</td>
+                                        <td className="px-6 py-4">
+                                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                                item.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                                item.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                                                'bg-yellow-100 text-yellow-800'
+                                            }`}>
+                                                {item.status}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="flex justify-end gap-2">
+                                                {item.status !== 'approved' && (
+                                                    <button 
+                                                        onClick={async () => {
+                                                            try {
+                                                                await api.put(`/api/feedback/${item._id}/status`, { status: 'approved' });
+                                                                setData(data.map(d => d._id === item._id ? { ...d, status: 'approved' } : d));
+                                                            } catch (err) {
+                                                                alert('Error approving feedback');
+                                                            }
+                                                        }}
+                                                        className="text-green-600 hover:text-green-900 text-sm font-medium"
+                                                    >
+                                                        Approve
+                                                    </button>
+                                                )}
+                                                <button 
+                                                    onClick={() => handleDelete(item._id)} 
+                                                    className="text-red-500 hover:text-red-700 text-sm font-medium"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
                                         </td>
                                     </>
                                 )}
