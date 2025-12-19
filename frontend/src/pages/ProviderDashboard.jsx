@@ -8,9 +8,9 @@ const ProviderDashboard = () => {
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6 text-primary">Provider Dashboard</h1>
+            <h1 className="text-3xl font-bold mb-6 text-primary text-center">Provider Dashboard</h1>
             
-            <div className="flex border-b mb-6">
+            <div className="flex justify-center border-b mb-6">
                 <button 
                     className={`px-4 py-2 font-medium ${activeTab === 'profile' ? 'border-b-2 border-accent text-accent' : 'text-gray-500'}`}
                     onClick={() => setActiveTab('profile')}
@@ -84,7 +84,7 @@ const ProfileSettings = () => {
     };
 
     return (
-        <div className="bg-white p-6 rounded-xl shadow-md max-w-2xl">
+        <div className="bg-white p-6 rounded-xl shadow-md max-w-2xl mx-auto">
             <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
             {msg.text && <div className={`p-3 rounded mb-4 ${msg.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{msg.text}</div>}
             <form onSubmit={handleSubmit}>
