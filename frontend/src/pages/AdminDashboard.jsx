@@ -425,7 +425,7 @@ const DataSection = ({ activeTab, setActiveTab }) => {
                 activeTab === 'users' ? '/admin/users' : 
                 activeTab === 'providers' ? '/admin/providers' : 
                 activeTab === 'bookings' ? '/admin/bookings' :
-                '/api/feedback'; // Feedback route
+                '/feedback'; // Fixed: removed redundant /api
             const res = await api.get(endpoint);
             setData(res.data);
         } catch (error) {
@@ -443,7 +443,7 @@ const DataSection = ({ activeTab, setActiveTab }) => {
                 activeTab === 'users' ? `/admin/users/${id}` : 
                 activeTab === 'providers' ? `/admin/providers/${id}` : 
                 activeTab === 'bookings' ? `/admin/bookings/${id}` :
-                `/api/feedback/${id}`; // Feedback route
+                `/feedback/${id}`; // Fixed: removed redundant /api
             await api.delete(endpoint);
             
             // Optimistic update
@@ -594,7 +594,7 @@ const DataSection = ({ activeTab, setActiveTab }) => {
                                                     <button 
                                                         onClick={async () => {
                                                             try {
-                                                                await api.put(`/api/feedback/${item._id}/status`, { status: 'approved' });
+                                                                await api.put(`/feedback/${item._id}/status`, { status: 'approved' });
                                                                 setData(data.map(d => d._id === item._id ? { ...d, status: 'approved' } : d));
                                                             } catch (err) {
                                                                 alert('Error approving feedback');

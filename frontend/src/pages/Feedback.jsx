@@ -17,6 +17,16 @@ const Feedback = () => {
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState('');
 
+    useEffect(() => {
+        if (user) {
+            setFormData(prev => ({
+                ...prev,
+                name: user.name || '',
+                email: user.email || ''
+            }));
+        }
+    }, [user]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
