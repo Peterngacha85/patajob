@@ -115,4 +115,5 @@ LSM/
 ### Frontend
 1. **Root Directory**: `frontend`
 2. **Build Command**: `npm install && npm run build`
-3. **Publish Directory**: `frontend/dist` (or `dist` if root dir is `frontend`)
+3. **Publish Directory**: `dist` (if root dir is `frontend`)
+4. **Environment Variables**: Add `VITE_API_URL=https://patajob.onrender.com/api` in the Vercel dashboard.
