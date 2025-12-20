@@ -30,7 +30,22 @@ const Login = () => {
         <div className="min-h-[80vh] flex items-center justify-center px-4">
             <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-gray-100">
                 <h2 className="text-3xl font-bold text-center mb-6 text-primary">Welcome Back</h2>
-                {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">{error}</div>}
+                {error && (
+                    <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-4 text-sm">
+                        <p className="font-bold mb-1">Login Failed</p>
+                        <p className="mb-3">{error}</p>
+                        
+                        {(error.toLowerCase().includes('pending') || error.toLowerCase().includes('approval')) && (
+                            <div className="bg-white/50 p-3 rounded border border-red-100 mt-2 text-xs">
+                                <p className="font-semibold mb-1">Contact Admin for fast approval:</p>
+                                <div className="grid grid-cols-1 gap-1">
+                                    <span>📞 0739090811</span>
+                                    <span>💬 0794108498 (WhatsApp)</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
                 <form onSubmit={handleSubmit}>
                     <Input 
                         label="Email Address" 

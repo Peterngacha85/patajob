@@ -34,12 +34,19 @@ const Register = () => {
             <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md border border-gray-100">
                 <h2 className="text-3xl font-bold text-center mb-6 text-primary">Create Account</h2>
                 {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">{error}</div>}
-                {success && (
-                    <div className="bg-blue-50 text-blue-800 p-4 rounded-xl mb-6 text-center animate-in fade-in duration-300">
-                        <div className="font-bold mb-1">Account Created</div>
-                        <div className="text-sm">{success}</div>
+                    <div className="bg-blue-50 text-blue-800 p-6 rounded-xl mb-6 animate-in fade-in duration-300">
+                        <div className="font-bold text-lg mb-2 text-center">Account Created Successfully!</div>
+                        <p className="text-sm mb-4 text-center">{success}</p>
+                        
+                        <div className="bg-white/50 p-4 rounded-lg border border-blue-100 text-sm">
+                            <p className="font-semibold mb-2">Approval taking too long? Contact Admin:</p>
+                            <ul className="space-y-1">
+                                <li>📞 Phone: <strong>0739090811</strong></li>
+                                <li>📧 Email: <strong>Info@patajob.co.ke</strong></li>
+                                <li>💬 WhatsApp: <strong>0794108498</strong></li>
+                            </ul>
+                        </div>
                     </div>
-                )}
                 {!success && (
                     <form onSubmit={handleSubmit}>
                     <Input 
