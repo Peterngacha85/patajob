@@ -35,16 +35,16 @@ const ProviderDashboard = () => {
 import { COUNTIES, SERVICES } from '../constants/data';
 
 const ProfileSettings = () => {
-    const { updateUser } = useContext(AuthContext);
+    const { user, updateUser } = useContext(AuthContext);
     const [formData, setFormData] = useState({ 
-        name: '', // Added name
-        email: '', // Added email
-        password: '', // Added password 
+        name: user?.name || '', 
+        email: user?.email || '', 
+        password: '', 
         services: '', 
         bio: '', 
         county: '', 
         town: '', 
-        whatsapp: '' 
+        whatsapp: user?.whatsapp || '' 
     });
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState({ text: '', type: '' });
