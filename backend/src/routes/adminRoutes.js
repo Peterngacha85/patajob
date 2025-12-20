@@ -22,8 +22,11 @@ router.put('/verify-provider/:id', verifyProvider);
 
 router.put('/verify-provider/:id', verifyProvider);
 
+// User routes
 router.get('/users', getAllUsers);
-router.put('/users/:id/verify', require('../controllers/adminController').verifyUser);
+router.put('/users/:id/verify', verifyUser);
+router.put('/users/bulk-verify', require('../controllers/adminController').bulkVerifyUsers);
+router.post('/users/bulk-delete', require('../controllers/adminController').bulkDeleteUsers);
 router.delete('/users/:id', deleteUser);
 
 router.get('/bookings', getAllBookings);

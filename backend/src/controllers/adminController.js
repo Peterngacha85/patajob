@@ -202,5 +202,49 @@ module.exports = {
     deleteUser,
     deleteProvider,
     deleteBooking,
-    deleteProviderService
+    deleteProviderService,
+    bulkVerifyUsers,
+    bulkDeleteUsers
+};
+
+// @desc    Bulk verify users
+// @route   PUT /api/admin/users/bulk-verify
+// @access  Private/Admin
+const bulkVerifyUsers = async (req, res) => {
+    const { userIds } = req.body; // Expecting array of IDs
+    try {
+        if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
+            return res.status(400).json({ message: 'No users selected' });
+        }
+
+        await User.updateMany(
+            { _id: { $in: userIds } },
+            { $set: { isEmailVerified: true } }
+        );
+
+        res.json({ message: `${userIds.length} users verified successfully` });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Bulk delete users
+// @route   POST /api/admin/users/bulk-delete
+// @access  Private/Admin
+const bulkDeleteUsers = async (req, res) => {
+    const { userIds } = req.body;
+    try {
+        if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
+            return res.status(400).json({ message: 'No users selected' });
+        }
+
+        await User.deleteMany({ _id: { $in: userIds } });
+        // Cascade delete related records
+        await Provider.deleteMany({ userId: { $in: userIds } });
+        await Booking.deleteMany({ userId: { $in: userIds } });
+
+        res.json({ message: `${userIds.length} users deleted successfully` });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };

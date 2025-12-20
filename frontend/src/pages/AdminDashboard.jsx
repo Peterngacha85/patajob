@@ -476,15 +476,92 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
         }
     };
 
+    // Bulk Actions Logic
+    const [selectedIds, setSelectedIds] = useState(new Set());
+
+    useEffect(() => {
+        setSelectedIds(new Set()); // Reset selection when tab changes
+    }, [activeTab]);
+
+    const handleSelectAll = (e) => {
+        if (e.target.checked) {
+            setSelectedIds(new Set(data.map(item => item._id)));
+        } else {
+            setSelectedIds(new Set());
+        }
+    };
+
+    const handleSelectOne = (id) => {
+        const newSelected = new Set(selectedIds);
+        if (newSelected.has(id)) {
+            newSelected.delete(id);
+        } else {
+            newSelected.add(id);
+        }
+        setSelectedIds(newSelected);
+    };
+
+    const handleBulkVerify = async () => {
+        if (!selectedIds.size) return;
+        if (!window.confirm(`Approve ${selectedIds.size} selected users?`)) return;
+        try {
+            await api.put('/admin/users/bulk-verify', { userIds: Array.from(selectedIds) });
+            fetchData();
+            setSelectedIds(new Set());
+        } catch (error) {
+            alert('Error verifying users');
+        }
+    };
+
+    const handleBulkDelete = async () => {
+        if (!selectedIds.size) return;
+        if (!window.confirm(`Permanently delete ${selectedIds.size} selected users?`)) return;
+        try {
+            await api.post('/admin/users/bulk-delete', { userIds: Array.from(selectedIds) });
+            fetchData();
+            setSelectedIds(new Set());
+        } catch (error) {
+            alert('Error deleting users');
+        }
+    };
+
     return (
         <div className="p-0 overflow-x-auto">
             {loading ? (
                 <div className="p-8 text-center text-gray-500">Loading data...</div>
             ) : (
+                <>
+                {activeTab === 'users' && selectedIds.size > 0 && (
+                    <div className="bg-blue-50 p-3 mx-4 mb-2 rounded flex justify-between items-center animate-in fade-in">
+                        <span className="text-sm font-semibold text-blue-800">{selectedIds.size} selected</span>
+                        <div className="flex gap-2">
+                            <button 
+                                onClick={handleBulkVerify}
+                                className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition"
+                            >
+                                Approve Selected
+                            </button>
+                            <button 
+                                onClick={handleBulkDelete}
+                                className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition"
+                            >
+                                Delete Selected
+                            </button>
+                        </div>
+                    </div>
+                )}
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         {activeTab === 'users' && (
                             <tr>
+                                <th className="px-6 py-3 text-left">
+                                    <input 
+                                        type="checkbox" 
+                                        onChange={handleSelectAll} 
+                                        checked={data.length > 0 && selectedIds.size === data.length}
+                                        className="rounded border-gray-300 text-primary focus:ring-primary"
+                                    />
+                                </th>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Name</th>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Email</th>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Role</th>
@@ -526,6 +603,14 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
                             <tr key={item._id} className="hover:bg-gray-50">
                                 {activeTab === 'users' && (
                                     <>
+                                        <td className="px-6 py-4">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={selectedIds.has(item._id)}
+                                                onChange={() => handleSelectOne(item._id)}
+                                                className="rounded border-gray-300 text-primary focus:ring-primary"
+                                            />
+                                        </td>
                                         <td className="px-6 py-4 text-sm font-medium text-gray-900">{item.name}</td>
                                         <td className="px-6 py-4 text-sm text-gray-500">{item.email}</td>
                                         <td className="px-6 py-4 text-sm text-gray-500 capitalize">{item.role}</td>
@@ -672,6 +757,7 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
                         )}
                     </tbody>
                 </table>
+                </>
             )}
         </div>
     );
