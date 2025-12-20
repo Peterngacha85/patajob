@@ -114,6 +114,9 @@ const getAllProviders = async (req, res) => {
 // @access Private/Admin
 const deleteUser = async (req, res) => {
     try {
+        if (req.params.id === req.user.id) {
+            return res.status(400).json({ message: 'You cannot delete your own admin account.' });
+        }
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
@@ -222,12 +225,19 @@ const bulkDeleteUsers = async (req, res) => {
             return res.status(400).json({ message: 'No users selected' });
         }
 
-        await User.deleteMany({ _id: { $in: userIds } });
-        // Cascade delete related records
-        await Provider.deleteMany({ userId: { $in: userIds } });
-        await Booking.deleteMany({ userId: { $in: userIds } });
+        // Filter out the current admin from the deletion list
+        const filteredIds = userIds.filter(id => id.toString() !== req.user.id.toString());
+        
+        if (filteredIds.length === 0) {
+            return res.status(400).json({ message: 'No valid users to delete (you cannot delete yourself).' });
+        }
 
-        res.json({ message: `${userIds.length} users deleted successfully` });
+        await User.deleteMany({ _id: { $in: filteredIds } });
+        // Cascade delete related records
+        await Provider.deleteMany({ userId: { $in: filteredIds } });
+        await Booking.deleteMany({ userId: { $in: filteredIds } });
+
+        res.json({ message: `${filteredIds.length} users deleted successfully` });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
