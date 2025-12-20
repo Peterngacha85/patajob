@@ -64,6 +64,7 @@ const loginUser = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                whatsapp: user.whatsapp,
                 token: generateToken(user.id),
             });
         } else {

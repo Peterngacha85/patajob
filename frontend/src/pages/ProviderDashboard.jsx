@@ -65,7 +65,7 @@ const ProfileSettings = () => {
                 bio,
                 county: location.county,
                 town: location.town,
-                whatsapp
+                whatsapp: whatsapp || userId?.whatsapp || ''
             });
         } catch (error) {
             // If 404, it means no profile yet, which is fine
