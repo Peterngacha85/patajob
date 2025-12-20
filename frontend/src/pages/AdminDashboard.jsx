@@ -6,7 +6,7 @@ import AuthContext from '../context/AuthContext';
 import { Users, Briefcase, Calendar, AlertCircle, CheckCircle, XCircle, User, MessageSquare } from 'lucide-react';
 
 const AdminDashboard = () => {
-    const { user, login } = useContext(AuthContext); // Use login to update context
+    const { user, updateUser } = useContext(AuthContext); 
     const [stats, setStats] = useState({ totalUsers: 0, totalProviders: 0, totalBookings: 0, pendingProviders: 0 });
     const [pendingProviders, setPendingProviders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -215,7 +215,7 @@ const AdminDashboard = () => {
                 </div>
 
                 {activeTab === 'profile' ? (
-                    <ProfileSection user={user} login={login} />
+                    <ProfileSection user={user} updateUser={updateUser} />
                 ) : (
                     <DataSection 
                         activeTab={activeTab} 
@@ -229,7 +229,7 @@ const AdminDashboard = () => {
     );
 };
 
-const ProfileSection = ({ user, login }) => {
+const ProfileSection = ({ user, updateUser }) => {
     const [formData, setFormData] = useState({
         name: user?.name || '',
         email: user?.email || '',
@@ -301,9 +301,8 @@ const ProfileSection = ({ user, login }) => {
             // Allow context to update
             // However, typical auth providers might require manual update if not re-fetching
             // In a real app we might call a function passed from context to update 'user' state locally.
-            // Assuming AuthContext handles token based hydration or we manual update:
-            // Let's assume login() stores token and sets user.
-            login(res.data); // Update local context with new user data
+            // Let's assume updateUser() stores user in localStorage and context.
+            updateUser(res.data); // Update local context with new user data
             
             setMessage({ type: 'success', text: 'Profile updated successfully' });
             setFormData(prev => ({ ...prev, password: '', confirmPassword: '' }));
