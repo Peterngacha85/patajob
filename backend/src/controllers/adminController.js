@@ -191,22 +191,6 @@ const deleteProviderService = async (req, res) => {
     }
 };
 
-module.exports = { 
-    getPendingProviders, 
-    verifyProvider, 
-    verifyUser,
-    getAllUsers, 
-    getDashboardStats, 
-    getAllBookings, 
-    getAllProviders,
-    deleteUser,
-    deleteProvider,
-    deleteBooking,
-    deleteProviderService,
-    bulkVerifyUsers,
-    bulkDeleteUsers
-};
-
 // @desc    Bulk verify users
 // @route   PUT /api/admin/users/bulk-verify
 // @access  Private/Admin
@@ -247,4 +231,20 @@ const bulkDeleteUsers = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+};
+
+module.exports = { 
+    getPendingProviders, 
+    verifyProvider, 
+    verifyUser,
+    getAllUsers, 
+    getDashboardStats, 
+    getAllBookings, 
+    getAllProviders,
+    deleteUser,
+    deleteProvider,
+    deleteBooking,
+    deleteProviderService,
+    bulkVerifyUsers,
+    bulkDeleteUsers
 };
