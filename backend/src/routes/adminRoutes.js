@@ -9,7 +9,8 @@ const {
     getAllProviders,
     deleteUser,
     deleteProvider,
-    deleteBooking
+    deleteBooking,
+    verifyUser // Import verifyUser
 } = require('../controllers/adminController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
@@ -20,13 +21,12 @@ router.get('/stats', getDashboardStats);
 router.get('/pending-providers', getPendingProviders);
 router.put('/verify-provider/:id', verifyProvider);
 
-router.put('/verify-provider/:id', verifyProvider);
-
 // User routes
 router.get('/users', getAllUsers);
-router.put('/users/:id/verify', verifyUser);
+// Place bulk routes BEFORE dynamic :id routes to prevent collision
 router.put('/users/bulk-verify', require('../controllers/adminController').bulkVerifyUsers);
 router.post('/users/bulk-delete', require('../controllers/adminController').bulkDeleteUsers);
+router.put('/users/:id/verify', verifyUser);
 router.delete('/users/:id', deleteUser);
 
 router.get('/bookings', getAllBookings);
