@@ -30,6 +30,23 @@ const verifyProvider = async (req, res) => {
     }
 };
 
+// @desc Verify a user (Account approval)
+// @route PUT /api/admin/users/:id/verify
+// @access Private/Admin
+const verifyUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        user.isEmailVerified = true;
+        await user.save();
+
+        res.json({ message: 'User approved successfully', user });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // @desc Get all users
 // @route GET /api/admin/users
 // @access Private/Admin
@@ -177,6 +194,7 @@ const deleteProviderService = async (req, res) => {
 module.exports = { 
     getPendingProviders, 
     verifyProvider, 
+    verifyUser,
     getAllUsers, 
     getDashboardStats, 
     getAllBookings, 

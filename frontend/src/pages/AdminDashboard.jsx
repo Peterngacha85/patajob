@@ -465,6 +465,17 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
         fetchData(); // Refresh current list
     };
 
+    const handleUserVerify = async (id) => {
+        if (!window.confirm('Are you sure you want to approve this user?')) return;
+        try {
+             await api.put(`/admin/users/${id}/verify`);
+             // Optimistic update
+             setData(data.map(user => user._id === id ? { ...user, isEmailVerified: true } : user));
+        } catch (error) {
+            alert('Error verifying user');
+        }
+    };
+
     return (
         <div className="p-0 overflow-x-auto">
             {loading ? (
@@ -478,6 +489,7 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Email</th>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Role</th>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">WhatsApp</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
                                 <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Actions</th>
                             </tr>
                         )}
@@ -518,8 +530,23 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
                                         <td className="px-6 py-4 text-sm text-gray-500">{item.email}</td>
                                         <td className="px-6 py-4 text-sm text-gray-500 capitalize">{item.role}</td>
                                         <td className="px-6 py-4 text-sm text-gray-500">{item.whatsapp || '-'}</td>
+                                        <td className="px-6 py-4">
+                                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${item.isEmailVerified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                                                {item.isEmailVerified ? 'Active' : 'Pending'}
+                                            </span>
+                                        </td>
                                         <td className="px-6 py-4 text-right">
-                                            <button onClick={() => handleDelete(item._id)} className="text-red-500 hover:text-red-700 text-sm font-medium">Delete</button>
+                                            <div className="flex justify-end gap-2 text-sm font-medium">
+                                                {!item.isEmailVerified && (
+                                                    <button 
+                                                        onClick={() => handleUserVerify(item._id)} 
+                                                        className="text-green-600 hover:text-green-900 px-2 py-1 bg-green-50 rounded"
+                                                    >
+                                                        Approve
+                                                    </button>
+                                                )}
+                                                <button onClick={() => handleDelete(item._id)} className="text-red-500 hover:text-red-700">Delete</button>
+                                            </div>
                                         </td>
                                     </>
                                 )}

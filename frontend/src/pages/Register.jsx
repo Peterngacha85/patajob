@@ -35,8 +35,8 @@ const Register = () => {
                 <h2 className="text-3xl font-bold text-center mb-6 text-primary">Create Account</h2>
                 {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4 text-sm">{error}</div>}
                 {success && (
-                    <div className="bg-green-100 text-green-800 p-4 rounded-xl mb-6 text-center animate-in fade-in duration-300">
-                        <div className="font-bold mb-1">Check your email!</div>
+                    <div className="bg-blue-50 text-blue-800 p-4 rounded-xl mb-6 text-center animate-in fade-in duration-300">
+                        <div className="font-bold mb-1">Account Created</div>
                         <div className="text-sm">{success}</div>
                     </div>
                 )}

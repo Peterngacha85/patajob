@@ -15,6 +15,11 @@ const createProviderProfile = async (req, res) => {
         whatsapp,
     };
 
+    // Check if user is approved (isEmailVerified is now used as Manual Admin Approval)
+    if (!req.user.isEmailVerified) {
+        return res.status(403).json({ message: 'Account not approved. Contact admin to list services.' });
+    }
+
     try {
         let provider = await Provider.findOne({ userId: req.user.id });
 

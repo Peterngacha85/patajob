@@ -23,7 +23,7 @@ const registerUser = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const emailVerificationToken = crypto.randomBytes(20).toString('hex');
+
 
         console.log('Creating user in DB...');
         const user = await User.create({ 
@@ -31,42 +31,15 @@ const registerUser = async (req, res) => {
             email, 
             password: hashedPassword, 
             role, 
-            whatsapp,
-            emailVerificationToken
+            whatsapp
         });
         
         if (user) {
-            console.log('User created successfully. Preparing verification email...');
-            const verificationUrl = `${process.env.FRONTEND_URL}/verify/${emailVerificationToken}`;
-            const message = `
-                <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-                    <h2 style="color: #6d28d9; text-align: center;">Welcome to PataJob!</h2>
-                    <p>Hi ${name},</p>
-                    <p>Thank you for joining PataJob. To start using our services, please verify your email address by clicking the button below:</p>
-                    <div style="text-align: center; margin: 30px 0;">
-                        <a href="${verificationUrl}" style="background-color: #6d28d9; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Verify Email Address</a>
-                    </div>
-                    <p>If the button doesn't work, copy and paste this link into your browser:</p>
-                    <p style="word-break: break-all; color: #666;">${verificationUrl}</p>
-                    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                    <p style="font-size: 12px; color: #999; text-align: center;">Fastweb Technologies @ PataJob</p>
-                </div>
-            `;
-
-            // Fire and forget (almost) to prevent hanging user response
-            sendEmail({
-                email: user.email,
-                subject: 'Verify your PataJob account',
-                message,
-            }).then(() => {
-                console.log('Verification email sent to:', user.email);
-            }).catch(err => {
-                console.error('Failed to send verification email to:', user.email, err.message);
-            });
-
-            // Return success immediately
+            console.log('User created successfully. Waiting for Admin approval.');
+            
+            // Return success immediately without sending email
             return res.status(201).json({
-                message: 'Registration successful! Please check your email to verify your account.'
+                message: 'Registration successful! Your account is pending Admin approval. You will not be able to login or list services until approved.'
             });
         } else {
             res.status(400).json({ message: 'Invalid user data' });
@@ -84,7 +57,7 @@ const loginUser = async (req, res) => {
         const user = await User.findOne({ email });
         if (user && (await bcrypt.compare(password, user.password))) {
             if (!user.isEmailVerified) {
-                return res.status(401).json({ message: 'Please verify your email to login' });
+                return res.status(401).json({ message: 'Account pending Admin approval. Please contact support.' });
             }
             res.json({
                 _id: user.id,

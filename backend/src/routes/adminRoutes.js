@@ -20,7 +20,10 @@ router.get('/stats', getDashboardStats);
 router.get('/pending-providers', getPendingProviders);
 router.put('/verify-provider/:id', verifyProvider);
 
+router.put('/verify-provider/:id', verifyProvider);
+
 router.get('/users', getAllUsers);
+router.put('/users/:id/verify', require('../controllers/adminController').verifyUser);
 router.delete('/users/:id', deleteUser);
 
 router.get('/bookings', getAllBookings);
