@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 
-const Input = ({ label, type = "text", value, onChange, placeholder, required = false, name }) => {
+const Input = ({ label, type = "text", value, onChange, placeholder, required = false, name, disabled = false }) => {
     const [showPassword, setShowPassword] = useState(false);
     const isPassword = type === 'password';
 
@@ -16,7 +16,8 @@ const Input = ({ label, type = "text", value, onChange, placeholder, required = 
                     onChange={onChange}
                     placeholder={placeholder}
                     required={required}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition"
+                    disabled={disabled}
+                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition ${disabled ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : ''}`}
                 />
                 {isPassword && (
                     <button

@@ -136,6 +136,7 @@ const ProfileSettings = () => {
                         value={formData.email} 
                         onChange={(e) => setFormData({...formData, email: e.target.value})} 
                         required
+                        disabled={true}
                     />
                    <Input 
                         label="Change Password (leave blank to keep current)" 

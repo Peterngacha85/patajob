@@ -215,6 +215,7 @@ const ClientProfileSettings = ({ user, updateUser }) => {
                         value={formData.email} 
                         onChange={(e) => setFormData({...formData, email: e.target.value})} 
                         required
+                        disabled={true}
                     />
                 </div>
                 
