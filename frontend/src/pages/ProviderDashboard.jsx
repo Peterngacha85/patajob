@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import api from '../services/api';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
+import AuthContext from '../context/AuthContext';
 
 const ProviderDashboard = () => {
     const [activeTab, setActiveTab] = useState('profile');
@@ -34,7 +35,17 @@ const ProviderDashboard = () => {
 import { COUNTIES, SERVICES } from '../constants/data';
 
 const ProfileSettings = () => {
-    const [formData, setFormData] = useState({ services: '', bio: '', county: '', town: '', whatsapp: '' });
+    const { updateUser } = useContext(AuthContext);
+    const [formData, setFormData] = useState({ 
+        name: '', // Added name
+        email: '', // Added email
+        password: '', // Added password 
+        services: '', 
+        bio: '', 
+        county: '', 
+        town: '', 
+        whatsapp: '' 
+    });
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState({ text: '', type: '' });
 
@@ -45,8 +56,11 @@ const ProfileSettings = () => {
     const fetchProfile = async () => {
         try {
             const res = await api.get('/providers/me');
-            const { services, bio, location, whatsapp } = res.data;
+            const { services, bio, location, whatsapp, userId } = res.data;
             setFormData({
+                name: userId?.name || '',
+                email: userId?.email || '',
+                password: '',
                 services: services.join(', '),
                 bio,
                 county: location.county,
@@ -66,10 +80,29 @@ const ProfileSettings = () => {
         setLoading(true);
         setMsg('');
         try {
-            await api.post('/providers', formData);
+            // 1. Update User Profile (Name, Email, Password)
+            const userRes = await api.put('/auth/profile', {
+                name: formData.name,
+                email: formData.email, // Assuming email can optionally be updated
+                password: formData.password || undefined,
+                whatsapp: formData.whatsapp // Sync whatsapp
+            });
+            updateUser(userRes.data);
+
+            // 2. Update Provider Profile (Services, Bio, Location)
+            await api.post('/providers', {
+                services: formData.services,
+                bio: formData.bio,
+                county: formData.county, 
+                town: formData.town, 
+                whatsapp: formData.whatsapp 
+            });
+
             setMsg({ text: 'Profile updated successfully!', type: 'success' });
+            setFormData(prev => ({ ...prev, password: '' })); // Clear password
         } catch (error) {
-            setMsg({ text: 'Error updating profile', type: 'error' });
+            console.error(error);
+            setMsg({ text: error.response?.data?.message || 'Error updating profile', type: 'error' });
         } finally {
             setLoading(false);
         }
@@ -88,6 +121,30 @@ const ProfileSettings = () => {
             <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
             {msg.text && <div className={`p-3 rounded mb-4 ${msg.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>{msg.text}</div>}
             <form onSubmit={handleSubmit}>
+                {/* User Details Section */}
+                <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                    <h3 className="font-bold text-gray-700 mb-4 border-b pb-2">Account Details</h3>
+                    <Input 
+                        label="Full Name" 
+                        value={formData.name} 
+                        onChange={(e) => setFormData({...formData, name: e.target.value})} 
+                        required
+                    />
+                    <Input 
+                        label="Email Address" 
+                        type="email"
+                        value={formData.email} 
+                        onChange={(e) => setFormData({...formData, email: e.target.value})} 
+                        required
+                    />
+                   <Input 
+                        label="Change Password (leave blank to keep current)" 
+                        type="password" 
+                        value={formData.password} 
+                        onChange={(e) => setFormData({...formData, password: e.target.value})} 
+                    />
+                </div>
+
                 <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Services (comma separated)</label>
                     <input 
