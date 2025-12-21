@@ -3,7 +3,7 @@ import api from '../services/api';
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
 import AuthContext from '../context/AuthContext';
-import { Users, Briefcase, Calendar, AlertCircle, CheckCircle, XCircle, User, MessageSquare } from 'lucide-react';
+import { Users, Briefcase, Calendar, AlertCircle, CheckCircle, XCircle, User, MessageSquare, Star } from 'lucide-react';
 
 const AdminDashboard = () => {
     const { user, updateUser } = useContext(AuthContext); 
@@ -201,6 +201,13 @@ const AdminDashboard = () => {
                         className={`px-6 py-3 font-medium text-sm transition ${activeTab === 'bookings' ? 'border-b-2 border-primary text-primary bg-primary/5' : 'text-gray-500 hover:text-gray-700'}`}
                     >
                         All Bookings
+                    </button>
+                    <button 
+                        onClick={() => setActiveTab('reviews')}
+                        className={`px-6 py-3 font-medium text-sm transition ${activeTab === 'reviews' ? 'border-b-2 border-primary text-primary bg-primary/5' : 'text-gray-500 hover:text-gray-700'} flex items-center gap-2`}
+                    >
+                        <Star size={16} />
+                        Reviews
                     </button>
                     <button 
                         onClick={() => setActiveTab('profile')}
