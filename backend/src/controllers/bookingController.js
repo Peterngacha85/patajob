@@ -34,11 +34,19 @@ const createBooking = async (req, res) => {
 const getBookings = async (req, res) => {
     try {
         let matchQuery = {};
-        if (req.user.role === 'provider') {
+        
+        // Admin can see all bookings
+        if (req.user.role === 'admin') {
+            matchQuery = {}; // No filter - show all bookings
+        }
+        // Provider sees bookings for their services
+        else if (req.user.role === 'provider') {
             const provider = await Provider.findOne({ userId: req.user.id });
             if (!provider) return res.status(404).json({ message: 'Provider profile not found' });
             matchQuery = { providerId: provider._id };
-        } else {
+        }
+        // Regular user sees their own bookings
+        else {
             matchQuery = { userId: new require('mongoose').Types.ObjectId(req.user.id) };
         }
 
