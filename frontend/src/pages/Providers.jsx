@@ -285,7 +285,7 @@ const Providers = () => {
                                 type="datetime-local"
                                 value={bookingModal.date} 
                                 onChange={(e) => setBookingModal({...bookingModal, date: e.target.value})} 
-                                min={new Date().toISOString().slice(0, 16)}
+                                min={new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16)}
                                 required
                             />
                             <div className="flex justify-end gap-3 pt-2">
