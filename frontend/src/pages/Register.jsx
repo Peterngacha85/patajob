@@ -98,28 +98,26 @@ const Register = () => {
                         required 
                     />
                     
-                    {/* Show role selection only if not specified in URL */}
-                    {!roleParam && (
-                        <div className="mb-6">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">I want to:</label>
-                            <div className="grid grid-cols-2 gap-4">
-                                <button
-                                    type="button"
-                                    onClick={() => setFormData({ ...formData, role: 'user' })}
-                                    className={`py-2 px-4 rounded-lg border font-medium transition ${formData.role === 'user' ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 border-gray-300'}`}
-                                >
-                                    Hire a Pro
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setFormData({ ...formData, role: 'provider' })}
-                                    className={`py-2 px-4 rounded-lg border font-medium transition ${formData.role === 'provider' ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 border-gray-300'}`}
-                                >
-                                    Offer Services
-                                </button>
-                            </div>
+                    {/* Show role selection always, with pre-selection if from URL */}
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">I want to:</label>
+                        <div className="grid grid-cols-2 gap-4">
+                            <button
+                                type="button"
+                                onClick={() => setFormData({ ...formData, role: 'user' })}
+                                className={`py-2 px-4 rounded-lg border font-medium transition ${formData.role === 'user' ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 border-gray-300'}`}
+                            >
+                                Hire a Pro
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setFormData({ ...formData, role: 'provider' })}
+                                className={`py-2 px-4 rounded-lg border font-medium transition ${formData.role === 'provider' ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 border-gray-300'}`}
+                            >
+                                Offer Services
+                            </button>
                         </div>
-                    )}
+                    </div>
 
                     <Button type="submit" variant="accent" className="w-full flex items-center justify-center gap-2" disabled={loading}>
                         {loading ? (

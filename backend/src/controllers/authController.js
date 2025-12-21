@@ -14,6 +14,12 @@ const registerUser = async (req, res) => {
     const { name, email, password, role, whatsapp } = req.body;
     console.log('Register request for:', email);
     try {
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ message: 'Please enter a valid email address' });
+        }
+
         const userExists = await User.findOne({ email });
         if (userExists) {
             console.log('User already exists:', email);
@@ -39,7 +45,7 @@ const registerUser = async (req, res) => {
             
             // Return success immediately without sending email
             return res.status(201).json({
-                message: 'Registration successful! Your account is pending Admin approval. You will not be able to login or list services until approved.'
+                message: 'Registration successful! Your account is pending admin approval. You will be notified once approved.'
             });
         } else {
             res.status(400).json({ message: 'Invalid user data' });
