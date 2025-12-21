@@ -173,8 +173,8 @@ const Providers = () => {
                                             )}
                                         </div>
                                         <div>
-                                            <h3 className="text-xl font-bold text-gray-800">{provider.userId?.name}</h3>
-                                            <p className="text-sm text-gray-500">{provider.services.join(', ')}</p>
+                                            <h3 className="text-xl font-bold text-gray-800">{provider.userId?.name || 'Anonymous'}</h3>
+                                            <p className="text-sm text-gray-500">{provider.services?.join(', ') || 'General Services'}</p>
                                         </div>
                                     </div>
                                     <div 
@@ -183,14 +183,14 @@ const Providers = () => {
                                         title="View Reviews"
                                     >
                                         <Star size={16} fill="currentColor" className="mr-1" />
-                                        <span className="font-bold">{provider.averageRating.toFixed(1)}</span>
-                                        <span className="text-gray-400 text-xs ml-1">({provider.totalReviews} reviews)</span>
+                                        <span className="font-bold">{(provider.averageRating || 0).toFixed(1)}</span>
+                                        <span className="text-gray-400 text-xs ml-1">({provider.totalReviews || 0} reviews)</span>
                                     </div>
                                 </div>
                                 <p className="text-gray-600 mb-4 line-clamp-2">{provider.bio || 'No bio available.'}</p>
                                 <div className="flex items-center text-gray-500 text-sm mb-6">
                                     <MapPin size={16} className="mr-1" />
-                                    {provider.location.town}, {provider.location.county}
+                                    {provider.location?.town || 'Unknown'}, {provider.location?.county || 'Kenya'}
                                 </div>
                                 <div className="grid grid-cols-2 gap-3">
                                     <a 

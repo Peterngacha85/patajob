@@ -63,10 +63,10 @@ const ProfileSettings = () => {
                 name: userId?.name || '',
                 email: userId?.email || '',
                 password: '',
-                services: services.join(', '),
-                bio,
-                county: location.county,
-                town: location.town,
+                services: services?.join(', ') || '',
+                bio: bio || '',
+                county: location?.county || '',
+                town: location?.town || '',
                 whatsapp: whatsapp || userId?.whatsapp || '',
                 profilePicture: userId?.profilePicture || ''
             });

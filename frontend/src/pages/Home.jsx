@@ -285,8 +285,8 @@ const Home = () => {
                                                     )}
                                                 </div>
                                                 <div>
-                                                    <h3 className="text-xl font-bold text-gray-800">{provider.userId?.name}</h3>
-                                                    <p className="text-sm text-primary font-medium mt-1">{provider.services.join(', ')}</p>
+                                                    <h3 className="text-xl font-bold text-gray-800">{provider.userId?.name || 'Anonymous'}</h3>
+                                                    <p className="text-sm text-primary font-medium mt-1">{provider.services?.join(', ') || 'General Services'}</p>
                                                 </div>
                                             </div>
                                             <div 
@@ -295,16 +295,18 @@ const Home = () => {
                                                 title="View Reviews"
                                             >
                                                 <Star size={16} fill="currentColor" className="mr-1" />
-                                                <span className="font-bold">{provider.averageRating.toFixed(1)}</span>
-                                                <span className="text-gray-400 text-xs ml-1">({provider.totalReviews} reviews)</span>
+                                                <span className="font-bold">{(provider.averageRating || 0).toFixed(1)}</span>
+                                                <span className="text-gray-400 text-xs ml-1">({provider.totalReviews || 0} reviews)</span>
                                             </div>
                                         </div>
                                         
                                         <p className="text-gray-600 mb-6 line-clamp-2 text-sm flex-grow">{provider.bio || 'No bio available.'}</p>
                                         
-                                        <div className="flex items-center text-gray-500 text-sm mb-6 bg-gray-50 p-2 rounded-lg">
-                                            <MapPin size={16} className="mr-2 text-primary" />
-                                            {provider.location.town}, {provider.location.county}
+                                        <div className="items-center text-gray-500 text-sm mb-6 bg-gray-50 p-2 rounded-lg">
+                                            <div className="flex items-center">
+                                                <MapPin size={16} className="mr-2 text-primary" />
+                                                {provider.location?.town || 'Unknown'}, {provider.location?.county || 'Kenya'}
+                                            </div>
                                         </div>
                                         
                                         <div className="grid grid-cols-2 gap-3 mt-auto">
