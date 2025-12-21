@@ -178,7 +178,7 @@ const ProfileSettings = () => {
                                     <img src={formData.profilePicture} alt="Profile" className="w-full h-full object-cover" />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-gray-400 text-2xl font-bold">
-                                        {formData.name.charAt(0)}
+                                        {formData.name?.charAt(0) || '?'}
                                     </div>
                                 )}
                             </div>
@@ -308,7 +308,7 @@ const BookingRequests = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                     {bookings.map((booking) => (
                         <tr key={booking._id}>
-                            <td className="px-6 py-4 whitespace-nowrap">{booking.userId?.name}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">{booking.userId?.name || 'Deleted User'}</td>
                             <td className="px-6 py-4 whitespace-nowrap">{booking.service}</td>
                             <td className="px-6 py-4 whitespace-nowrap">{new Date(booking.bookingDate).toLocaleDateString()}</td>
                             <td className="px-6 py-4 whitespace-nowrap">

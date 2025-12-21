@@ -68,7 +68,7 @@ const Home = () => {
     };
 
     const handleViewReviews = async (provider) => {
-         setReviewsModal({ open: true, providerName: provider.userId?.name, reviews: [], loading: true });
+         setReviewsModal({ open: true, providerName: provider.userId?.name || 'Unknown Provider', reviews: [], loading: true });
          try {
              const res = await api.get(`/reviews/${provider._id}`);
              setReviewsModal(prev => ({ ...prev, reviews: res.data, loading: false }));

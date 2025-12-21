@@ -688,8 +688,8 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
                                 )}
                                 {activeTab === 'providers' && (
                                     <>
-                                        <td className="px-6 py-4 text-sm font-medium text-gray-900">{item.userId?.name}</td>
-                                        <td className="px-6 py-4 text-sm text-gray-500">{item.location?.town}, {item.location?.county}</td>
+                                        <td className="px-6 py-4 text-sm font-medium text-gray-900">{item.userId?.name || 'Deleted User'}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-500">{item.location?.town || 'Unknown'}, {item.location?.county || 'Kenya'}</td>
                                         <td className="px-6 py-4 text-sm text-gray-500">
                                             <div className="flex flex-wrap gap-1">
                                                 {item.services?.map((s, i) => (
@@ -697,30 +697,30 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
                                                         {s}
                                                         <button 
                                                             onClick={async (e) => {
-                                                                e.stopPropagation();
-                                                                if (!window.confirm(`Are you sure you want to remove the service "${s}" from this provider?`)) return;
-                                                                try {
-                                                                    await api.delete(`/admin/providers/${item._id}/services/${encodeURIComponent(s)}`);
-                                                                    // Optimistic update or refresh
-                                                                    setData(data.map(d => {
-                                                                        if (d._id === item._id) {
-                                                                            return { ...d, services: d.services.filter(srv => srv !== s) };
-                                                                        }
-                                                                        return d;
-                                                                    }));
-                                                                } catch (error) {
-                                                                    console.error(error);
-                                                                    alert('Error removing service');
-                                                                }
-                                                            }}
-                                                            className="hover:text-red-600 focus:outline-none flex items-center justify-center w-4 h-4 rounded-full hover:bg-gray-200 transition"
-                                                            title="Remove service"
-                                                        >
-                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
-                                                                <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                                                            </svg>
-                                                        </button>
-                                                    </span>
+                                                                 e.stopPropagation();
+                                                                 if (!window.confirm(`Are you sure you want to remove the service "${s}" from this provider?`)) return;
+                                                                 try {
+                                                                     await api.delete(`/admin/providers/${item._id}/services/${encodeURIComponent(s)}`);
+                                                                     // Optimistic update or refresh
+                                                                     setData(data.map(d => {
+                                                                         if (d._id === item._id) {
+                                                                             return { ...d, services: d.services.filter(srv => srv !== s) };
+                                                                         }
+                                                                         return d;
+                                                                     }));
+                                                                 } catch (error) {
+                                                                     console.error(error);
+                                                                     alert('Error removing service');
+                                                                 }
+                                                             }}
+                                                             className="hover:text-red-600 focus:outline-none flex items-center justify-center w-4 h-4 rounded-full hover:bg-gray-200 transition"
+                                                             title="Remove service"
+                                                         >
+                                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
+                                                                 <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                                                             </svg>
+                                                         </button>
+                                                     </span>
                                                 ))}
                                             </div>
                                         </td>
@@ -746,10 +746,10 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
                                 )}
                                 {activeTab === 'bookings' && (
                                     <>
-                                        <td className="px-6 py-4 text-sm font-medium text-gray-900">{item.userId?.name}</td>
-                                        <td className="px-6 py-4 text-sm text-gray-500">{item.service}</td>
-                                        <td className="px-6 py-4 text-sm text-gray-500">{new Date(item.bookingDate).toLocaleDateString()}</td>
-                                        <td className="px-6 py-4 text-sm text-gray-500 capitalize">{item.status}</td>
+                                        <td className="px-6 py-4 text-sm font-medium text-gray-900">{item.userId?.name || 'Deleted User'}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-500">{item.service || 'N/A'}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-500">{item.bookingDate ? new Date(item.bookingDate).toLocaleDateString() : 'N/A'}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-500 capitalize">{item.status || 'pending'}</td>
                                         <td className="px-6 py-4 text-right">
                                             <button onClick={() => handleDelete(item._id)} className="text-red-500 hover:text-red-700 text-sm font-medium">Delete</button>
                                         </td>
@@ -758,8 +758,8 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
                                 {activeTab === 'feedback' && (
                                     <>
                                         <td className="px-6 py-4">
-                                            <div className="text-sm font-medium text-gray-900">{item.name}</div>
-                                            <div className="text-sm text-gray-500">{item.email}</div>
+                                            <div className="text-sm font-medium text-gray-900">{item.name || 'Anonymous'}</div>
+                                            <div className="text-sm text-gray-500">{item.email || 'N/A'}</div>
                                         </td>
                                         <td className="px-6 py-4 text-sm text-gray-500 capitalize">{item.type}</td>
                                         <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate" title={item.content}>{item.content}</td>

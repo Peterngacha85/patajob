@@ -266,7 +266,7 @@ const ClientProfileSettings = ({ user, updateUser }) => {
                                     <img src={formData.profilePicture} alt="Profile" className="w-full h-full object-cover" />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-gray-400 text-2xl font-bold">
-                                        {formData.name.charAt(0)}
+                                        {formData.name?.charAt(0) || '?'}
                                     </div>
                                 )}
                             </div>
