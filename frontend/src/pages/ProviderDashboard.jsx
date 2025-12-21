@@ -42,8 +42,6 @@ const ProviderDashboard = () => {
     );
 };
 
-import { COUNTIES, SERVICES } from '../constants/data';
-
 const ProfileSettings = () => {
     const { user, updateUser } = useContext(AuthContext);
     const [formData, setFormData] = useState({ 
