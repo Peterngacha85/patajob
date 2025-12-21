@@ -249,7 +249,17 @@ const Providers = () => {
                                 </div>
                                 
                                 <button 
-                                    onClick={() => handleViewProfile(provider)}
+                                    onClick={() => {
+                                        if (!user) {
+                                            confirmAction(
+                                                'Login Required',
+                                                'Please login to view provider profiles.',
+                                                'OK'
+                                            );
+                                            return;
+                                        }
+                                        handleViewProfile(provider);
+                                    }}
                                     className="w-full mb-3 flex items-center justify-center px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition font-medium text-sm gap-2"
                                 >
                                     <Eye size={16} />
