@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
 import AuthContext from '../context/AuthContext';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
@@ -8,7 +9,23 @@ import { Loader2 } from 'lucide-react';
 const Register = () => {
     const { register } = useContext(AuthContext);
     const navigate = useNavigate();
-    const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'user' });
+    const [searchParams] = useSearchParams();
+    const roleParam = searchParams.get('role'); // user or provider
+
+    const [formData, setFormData] = useState({ 
+        name: '', 
+        email: '', 
+        password: '', 
+        role: roleParam === 'provider' ? 'provider' : 'user',
+        whatsapp: ''
+    });
+
+    useEffect(() => {
+        if (roleParam === 'provider' || roleParam === 'user') {
+            setFormData(prev => ({ ...prev, role: roleParam }));
+        }
+    }, [roleParam]);
+
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
@@ -81,25 +98,28 @@ const Register = () => {
                         required 
                     />
                     
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">I want to:</label>
-                        <div className="grid grid-cols-2 gap-4">
-                            <button
-                                type="button"
-                                onClick={() => setFormData({ ...formData, role: 'user' })}
-                                className={`py-2 px-4 rounded-lg border font-medium transition ${formData.role === 'user' ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 border-gray-300'}`}
-                            >
-                                Hire a Pro
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setFormData({ ...formData, role: 'provider' })}
-                                className={`py-2 px-4 rounded-lg border font-medium transition ${formData.role === 'provider' ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 border-gray-300'}`}
-                            >
-                                Offer Services
-                            </button>
+                    {/* Show role selection only if not specified in URL */}
+                    {!roleParam && (
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">I want to:</label>
+                            <div className="grid grid-cols-2 gap-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, role: 'user' })}
+                                    className={`py-2 px-4 rounded-lg border font-medium transition ${formData.role === 'user' ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 border-gray-300'}`}
+                                >
+                                    Hire a Pro
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, role: 'provider' })}
+                                    className={`py-2 px-4 rounded-lg border font-medium transition ${formData.role === 'provider' ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 border-gray-300'}`}
+                                >
+                                    Offer Services
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     <Button type="submit" variant="accent" className="w-full flex items-center justify-center gap-2" disabled={loading}>
                         {loading ? (

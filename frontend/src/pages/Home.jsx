@@ -175,7 +175,7 @@ const Home = () => {
                         >
                             Find a Pro
                         </button>
-                        <Link to="/register" className="bg-white/10 backdrop-blur-md border-2 border-white/30 hover:bg-white text-white hover:text-primary px-10 py-4 rounded-full font-bold text-lg transition shadow-lg hover:shadow-xl hover:-translate-y-1 transform">
+                        <Link to="/register?role=provider" className="bg-white/10 backdrop-blur-md border-2 border-white/30 hover:bg-white text-white hover:text-primary px-10 py-4 rounded-full font-bold text-lg transition shadow-lg hover:shadow-xl hover:-translate-y-1 transform">
                             Join as a Pro
                         </Link>
                     </div>
