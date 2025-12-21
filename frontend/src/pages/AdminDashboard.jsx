@@ -598,13 +598,19 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
 
     const handleBulkDelete = async () => {
         if (!selectedIds.size) return;
-        if (!window.confirm(`Permanently delete ${selectedIds.size} selected users?`)) return;
+        const confirmed = await confirmAction(
+            'Delete Users',
+            `Permanently delete ${selectedIds.size} selected users? This action cannot be undone.`,
+            'Yes, Delete'
+        );
+        if (!confirmed) return;
         try {
             await api.post('/admin/users/bulk-delete', { userIds: Array.from(selectedIds) });
             fetchData();
             setSelectedIds(new Set());
+            showToast('success', `${selectedIds.size} users deleted`);
         } catch (error) {
-            alert('Error deleting users');
+            showToast('error', 'Error deleting users');
         }
     };
 
