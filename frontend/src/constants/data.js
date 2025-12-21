@@ -17,5 +17,11 @@ export const SERVICES = [
     "Web Design", "Auto Mechanic", "Driver", "House Help", "Masonry", 
     "Welding", "IT Support", "Interior Design", "CCTV Installation",
     "Solar Installation", "Farming Consultant", "Veterinary",
-    "Legal Services", "Accounting"
+    "Legal Services", "Accounting", "Tailoring", "Laundry Services",
+    "Security Services", "Roofing", "Tiling", "Flooring", "Locksmith",
+    "Appliance Repair", "AC Repair", "Graphic Design", "Video Editing",
+    "Content Writing", "Social Media Management", "Hair Styling", "Makeup Artist",
+    "Fitness Training", "Yoga Instructor", "Music Lessons", "Dance Instructor",
+    "Childcare", "Elderly Care", "Nursing Services", "Physiotherapy"
 ];
+

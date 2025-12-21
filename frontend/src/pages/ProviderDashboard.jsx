@@ -5,6 +5,7 @@ import Button from '../components/common/Button';
 import AuthContext from '../context/AuthContext';
 import { showToast, confirmAction } from '../utils/swal';
 import { compressImage } from '../utils/imageCompression';
+import { COUNTIES, SERVICES } from '../constants/data';
 
 const ProviderDashboard = () => {
     const [activeTab, setActiveTab] = useState('profile');
@@ -210,12 +211,18 @@ const ProfileSettings = () => {
                 <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Services (comma separated)</label>
                     <input 
+                        list="services-suggestions"
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 mb-2"
                         value={formData.services} 
                         onChange={(e) => setFormData({...formData, services: e.target.value})} 
-                        placeholder="e.g. Plumber, Electrician"
+                        placeholder="e.g. Plumber, Electrician (start typing for suggestions)"
                         required
                     />
+                    <datalist id="services-suggestions">
+                        {SERVICES.map(service => (
+                            <option key={service} value={service} />
+                        ))}
+                    </datalist>
                     <div className="flex flex-wrap gap-2 mt-2">
                         {SERVICES.slice(0, 10).map(s => (
                             <button 
