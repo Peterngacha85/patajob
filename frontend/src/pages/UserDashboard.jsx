@@ -185,6 +185,19 @@ const ClientProfileSettings = ({ user, updateUser }) => {
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState({ text: '', type: '' });
 
+    // Sync form data with user context
+    useEffect(() => {
+        if (user) {
+            setFormData({
+                name: user.name || '',
+                email: user.email || '',
+                whatsapp: user.whatsapp || '',
+                profilePicture: user.profilePicture || '',
+                password: ''
+            });
+        }
+    }, [user]);
+
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
