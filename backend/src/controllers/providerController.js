@@ -71,7 +71,7 @@ const getProviders = async (req, res) => {
         }
 
         const providers = await Provider.find(query)
-            .populate('userId', 'name email')
+            .populate('userId', 'name email profilePicture')
             .sort({ createdAt: -1 });
 
         res.json(providers);
@@ -86,7 +86,7 @@ const getProviders = async (req, res) => {
 // @access  Public
 const getProviderById = async (req, res) => {
     try {
-        const provider = await Provider.findById(req.params.id).populate('userId', ['name', 'email', 'whatsapp']);
+        const provider = await Provider.findById(req.params.id).populate('userId', ['name', 'email', 'whatsapp', 'profilePicture']);
 
         if (!provider) {
             return res.status(404).json({ message: 'Provider not found' });
@@ -107,7 +107,7 @@ const getProviderById = async (req, res) => {
 // @access  Private
 const getCurrentProvider = async (req, res) => {
     try {
-        const provider = await Provider.findOne({ userId: req.user.id }).populate('userId', ['name', 'email', 'whatsapp']);
+        const provider = await Provider.findOne({ userId: req.user.id }).populate('userId', ['name', 'email', 'whatsapp', 'profilePicture']);
         if (!provider) {
             return res.status(404).json({ message: 'Provider profile not found' });
         }

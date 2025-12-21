@@ -6,7 +6,7 @@ const Provider = require('../models/Provider');
 // @access Private/Admin
 const getPendingProviders = async (req, res) => {
     try {
-        const providers = await Provider.find({ isVerified: false }).populate('userId', 'name email');
+        const providers = await Provider.find({ isVerified: false }).populate('userId', 'name email profilePicture');
         res.json(providers);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -88,7 +88,7 @@ const getDashboardStats = async (req, res) => {
 const getAllBookings = async (req, res) => {
     try {
         const bookings = await Booking.find({})
-            .populate('userId', 'name email')
+            .populate('userId', 'name email profilePicture')
             .populate('providerId', 'location services') // Simplify populate
             .sort({ createdAt: -1 });
         res.json(bookings);
@@ -102,7 +102,7 @@ const getAllBookings = async (req, res) => {
 // @access Private/Admin
 const getAllProviders = async (req, res) => {
     try {
-        const providers = await Provider.find({}).populate('userId', 'name email');
+        const providers = await Provider.find({}).populate('userId', 'name email profilePicture');
         res.json(providers);
     } catch (error) {
         res.status(500).json({ message: error.message });
