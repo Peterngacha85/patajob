@@ -118,16 +118,22 @@ const ProfileSettings = () => {
             // 1. Update User Profile (Name, Email, Password)
             const userRes = await api.put('/auth/profile', {
                 name: formData.name,
-                email: formData.email, // Assuming email can optionally be updated
+                email: formData.email,
                 password: formData.password || undefined,
-                whatsapp: formData.whatsapp, // Sync whatsapp
+                whatsapp: formData.whatsapp,
                 profilePicture: formData.profilePicture
             });
             updateUser(userRes.data);
 
             // 2. Update Provider Profile (Services, Bio, Location)
+            // Convert comma-separated services string to array
+            const servicesArray = formData.services
+                .split(',')
+                .map(s => s.trim())
+                .filter(s => s.length > 0);
+
             await api.post('/providers', {
-                services: formData.services,
+                services: servicesArray,
                 bio: formData.bio,
                 county: formData.county, 
                 town: formData.town, 
@@ -137,8 +143,10 @@ const ProfileSettings = () => {
             showToast('success', 'Profile updated successfully!');
             setFormData(prev => ({ ...prev, password: '' })); // Clear password
         } catch (error) {
-            console.error(error);
-            showToast('error', error.response?.data?.message || 'Error updating profile');
+            console.error('Profile update error:', error);
+            console.error('Error response:', error.response?.data);
+            const errorMsg = error.response?.data?.message || error.message || 'Error updating profile';
+            showToast('error', errorMsg);
         } finally {
             setLoading(false);
         }
