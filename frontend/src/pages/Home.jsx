@@ -4,7 +4,7 @@ import api from '../services/api';
 import AuthContext from '../context/AuthContext';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
-import { MapPin, Star, Search, Phone, Calendar } from 'lucide-react';
+import { MapPin, Star, Search, Phone, Calendar, User, Eye } from 'lucide-react';
 import { COUNTIES, SERVICES } from '../constants/data';
 import { showToast, confirmAction } from '../utils/swal';
 
@@ -43,6 +43,9 @@ const Home = () => {
 
     // Booking Modal State
     const [bookingModal, setBookingModal] = useState({ open: false, providerId: null, service: '', date: '' });
+
+    // Profile Modal State
+    const [profileModal, setProfileModal] = useState({ open: false, provider: null });
 
     const checkAccess = async (actionLabel) => {
         if (!user) {
@@ -124,6 +127,10 @@ const Home = () => {
              console.error("Error fetching reviews", error);
              setReviewsModal(prev => ({ ...prev, loading: false }));
          }
+    };
+
+    const handleViewProfile = (provider) => {
+        setProfileModal({ open: true, provider });
     };
     
 
@@ -357,6 +364,14 @@ const Home = () => {
                                             </div>
                                         </div>
                                         
+                                        <button 
+                                            onClick={() => handleViewProfile(provider)}
+                                            className="w-full mb-3 flex items-center justify-center px-4 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition font-medium text-sm gap-2"
+                                        >
+                                            <Eye size={16} />
+                                            View Full Profile
+                                        </button>
+
                                         <div className="grid grid-cols-2 gap-3 mt-auto">
                                             <button 
                                                 onClick={() => handleWhatsAppClick(provider.whatsapp)}
@@ -464,6 +479,97 @@ const Home = () => {
                                 <Button type="submit" variant="primary">Send Request</Button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Provider Profile Modal */}
+            {profileModal.open && profileModal.provider && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50" onClick={() => setProfileModal({ open: false, provider: null })}>
+                    <div className="bg-white rounded-2xl p-6 max-w-2xl w-full shadow-2xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+                        <div className="flex justify-between items-start mb-6">
+                            <h3 className="text-2xl font-bold text-gray-900">Provider Profile</h3>
+                            <button onClick={() => setProfileModal({ open: false, provider: null })} className="text-gray-400 hover:text-gray-600">
+                                <span className="text-2xl">&times;</span>
+                            </button>
+                        </div>
+                        
+                        {/* Profile Picture and Basic Info */}
+                        <div className="flex flex-col md:flex-row gap-6 mb-6">
+                            <div className="flex-shrink-0">
+                                {profileModal.provider.userId?.profilePicture ? (
+                                    <img 
+                                        src={profileModal.provider.userId.profilePicture} 
+                                        alt={profileModal.provider.userId.name} 
+                                        className="w-32 h-32 rounded-xl object-cover border-2 border-primary/20"
+                                    />
+                                ) : (
+                                    <div className="w-32 h-32 rounded-xl bg-primary/10 flex items-center justify-center text-primary text-5xl font-bold">
+                                        {profileModal.provider.userId?.name.charAt(0)}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex-1">
+                                <h4 className="text-2xl font-bold text-gray-800 mb-2">{profileModal.provider.userId?.name || 'Anonymous'}</h4>
+                                <div className="flex items-center text-yellow-500 mb-3">
+                                    <Star size={20} fill="currentColor" className="mr-1" />
+                                    <span className="font-bold text-lg">{(profileModal.provider.averageRating || 0).toFixed(1)}</span>
+                                    <span className="text-gray-400 text-sm ml-2">({profileModal.provider.totalReviews || 0} reviews)</span>
+                                </div>
+                                <div className="flex items-center text-gray-600 mb-2">
+                                    <MapPin size={18} className="mr-2 text-primary" />
+                                    {profileModal.provider.location?.town || 'Unknown'}, {profileModal.provider.location?.county || 'Kenya'}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Services */}
+                        <div className="mb-6">
+                            <h5 className="font-bold text-gray-700 mb-2">Services Offered</h5>
+                            <div className="flex flex-wrap gap-2">
+                                {profileModal.provider.services?.map((service, idx) => (
+                                    <span key={idx} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                                        {service}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Bio */}
+                        <div className="mb-6">
+                            <h5 className="font-bold text-gray-700 mb-2">About</h5>
+                            <p className="text-gray-600 leading-relaxed">{profileModal.provider.bio || 'No bio available.'}</p>
+                        </div>
+
+                        {/* Contact WhatsApp */}
+                        <div className="mb-6">
+                            <h5 className="font-bold text-gray-700 mb-2">Contact</h5>
+                            <p className="text-gray-600">WhatsApp: {profileModal.provider.whatsapp || 'Not provided'}</p>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="grid grid-cols-3 gap-3 pt-4 border-t">
+                            <button 
+                                onClick={() => { handleWhatsAppClick(profileModal.provider.whatsapp); setProfileModal({ open: false, provider: null }); }}
+                                className="flex items-center justify-center px-4 py-2 border border-green-500 text-green-600 rounded-lg hover:bg-green-50 transition font-medium text-sm"
+                            >
+                                WhatsApp
+                            </button>
+                            <button 
+                                onClick={() => { handleCallClick(profileModal.provider.whatsapp); setProfileModal({ open: false, provider: null }); }}
+                                className="flex items-center justify-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition font-medium text-sm gap-2"
+                            >
+                                <Phone size={16} />
+                                Call
+                            </button>
+                            <button 
+                                onClick={() => { handleBookClick(profileModal.provider); setProfileModal({ open: false, provider: null }); }}
+                                className="flex items-center justify-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition font-medium text-sm gap-2"
+                            >
+                                <Calendar size={16} />
+                                Book
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
