@@ -4,6 +4,7 @@ import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 import AuthContext from '../context/AuthContext';
 import { showToast, confirmAction } from '../utils/swal';
+import { compressImage } from '../utils/imageCompression';
 
 const ProviderDashboard = () => {
     const [activeTab, setActiveTab] = useState('profile');
@@ -90,11 +91,12 @@ const ProfileSettings = () => {
         const file = e.target.files[0];
         if (!file) return;
 
-        const formData = new FormData();
-        formData.append('avatar', file);
-
         setUploading(true);
         try {
+            const optimizedFile = await compressImage(file);
+            const formData = new FormData();
+            formData.append('avatar', optimizedFile);
+
             const res = await api.post('/auth/upload-avatar', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });

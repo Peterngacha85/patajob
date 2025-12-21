@@ -4,6 +4,7 @@ import AuthContext from '../context/AuthContext';
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
 import { showToast } from '../utils/swal';
+import { compressImage } from '../utils/imageCompression';
 
 const UserDashboard = () => {
     const { user, updateUser } = useContext(AuthContext);
@@ -188,11 +189,12 @@ const ClientProfileSettings = ({ user, updateUser }) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        const formData = new FormData();
-        formData.append('avatar', file);
-
         setUploading(true);
         try {
+            const optimizedFile = await compressImage(file);
+            const formData = new FormData();
+            formData.append('avatar', optimizedFile);
+
             const res = await api.post('/auth/upload-avatar', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
