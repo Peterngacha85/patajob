@@ -484,7 +484,7 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
             else if (activeTab === 'reviews') res = await api.get('/admin/reviews');
             else if (activeTab === 'feedback') res = await api.get('/feedback');
             setData(res.data);
-            setSelectedIds([]);
+            setSelectedIds(new Set());
         } catch (error) {
             console.error(error);
         } finally {
