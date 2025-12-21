@@ -302,46 +302,102 @@ const BookingRequests = () => {
 
     return (
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                    <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                    {bookings.map((booking) => (
-                        <tr key={booking._id}>
-                            <td className="px-6 py-4 whitespace-nowrap">{booking.userId?.name || 'Deleted User'}</td>
-                            <td className="px-6 py-4 whitespace-nowrap">{booking.service}</td>
-                            <td className="px-6 py-4 whitespace-nowrap">{new Date(booking.bookingDate).toLocaleDateString()}</td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                                <span className={`px-2 inline-flex text-xs leading-5 font-bold rounded-full 
-                                    ${booking.status === 'completed' ? 'bg-green-100 text-green-800' : 
-                                      booking.status === 'accepted' ? 'bg-blue-100 text-blue-800' : 
-                                      booking.status === 'cancelled' ? 'bg-red-100 text-red-800' : 
-                                      'bg-yellow-100 text-yellow-800'}`}>
-                                    {booking.status}
-                                </span>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                {booking.status === 'pending' && (
-                                    <>
-                                        <button onClick={() => handleStatusUpdate(booking._id, 'accepted')} className="text-green-600 hover:text-green-900 mr-4">Accept</button>
-                                        <button onClick={() => handleStatusUpdate(booking._id, 'cancelled')} className="text-red-600 hover:text-red-900">Reject</button>
-                                    </>
-                                )}
-                                {booking.status === 'accepted' && (
-                                    <button onClick={() => handleStatusUpdate(booking._id, 'completed')} className="text-blue-600 hover:text-blue-900">Mark Completed</button>
-                                )}
-                            </td>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                        <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                        {bookings.map((booking) => (
+                            <tr key={booking._id}>
+                                <td className="px-6 py-4 whitespace-nowrap font-medium">{booking.userId?.name || 'Deleted User'}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">{booking.service}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    {new Date(booking.bookingDate).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <span className={`px-2 inline-flex text-xs leading-5 font-bold rounded-full 
+                                        ${booking.status === 'completed' ? 'bg-green-100 text-green-800' : 
+                                          booking.status === 'accepted' ? 'bg-blue-100 text-blue-800' : 
+                                          booking.status === 'cancelled' ? 'bg-red-100 text-red-800' : 
+                                          'bg-yellow-100 text-yellow-800'}`}>
+                                        {booking.status}
+                                    </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    {booking.status === 'pending' && (
+                                        <>
+                                            <button onClick={() => handleStatusUpdate(booking._id, 'accepted')} className="text-green-600 hover:text-green-900 mr-4">Accept</button>
+                                            <button onClick={() => handleStatusUpdate(booking._id, 'cancelled')} className="text-red-600 hover:text-red-900">Reject</button>
+                                        </>
+                                    )}
+                                    {booking.status === 'accepted' && (
+                                        <button onClick={() => handleStatusUpdate(booking._id, 'completed')} className="text-blue-600 hover:text-blue-900">Mark Completed</button>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden divide-y divide-gray-100">
+                {bookings.map((booking) => (
+                    <div key={booking._id} className="p-4 bg-white hover:bg-gray-50">
+                        <div className="flex justify-between items-start mb-2">
+                            <div>
+                                <p className="font-bold text-gray-900">{booking.userId?.name || 'Deleted User'}</p>
+                                <p className="text-sm text-primary font-medium">{booking.service}</p>
+                            </div>
+                            <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full uppercase
+                                ${booking.status === 'completed' ? 'bg-green-100 text-green-800' : 
+                                  booking.status === 'accepted' ? 'bg-blue-100 text-blue-800' : 
+                                  booking.status === 'cancelled' ? 'bg-red-100 text-red-800' : 
+                                  'bg-yellow-100 text-yellow-800'}`}>
+                                {booking.status}
+                            </span>
+                        </div>
+                        <div className="text-xs text-gray-500 mb-4">
+                            <p>{new Date(booking.bookingDate).toLocaleString([], { dateStyle: 'full', timeStyle: 'short' })}</p>
+                        </div>
+                        <div className="flex gap-2">
+                            {booking.status === 'pending' && (
+                                <>
+                                    <button 
+                                        onClick={() => handleStatusUpdate(booking._id, 'accepted')} 
+                                        className="flex-1 bg-green-500 text-white text-xs py-2 rounded-lg font-bold hover:bg-green-600 transition"
+                                    >
+                                        Accept
+                                    </button>
+                                    <button 
+                                        onClick={() => handleStatusUpdate(booking._id, 'cancelled')} 
+                                        className="flex-1 bg-red-100 text-red-600 text-xs py-2 rounded-lg font-bold hover:bg-red-200 transition"
+                                    >
+                                        Reject
+                                    </button>
+                                </>
+                            )}
+                            {booking.status === 'accepted' && (
+                                <button 
+                                    onClick={() => handleStatusUpdate(booking._id, 'completed')} 
+                                    className="w-full bg-blue-500 text-white text-xs py-2 rounded-lg font-bold hover:bg-blue-600 transition"
+                                >
+                                    Mark Completed
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+
             {bookings.length === 0 && <div className="p-6 text-center text-gray-500">No booking requests found.</div>}
         </div>
     );

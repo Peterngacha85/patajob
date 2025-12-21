@@ -8,6 +8,11 @@ const createBooking = async (req, res) => {
     const { providerId, service, bookingDate } = req.body;
 
     try {
+        // Validation: Prevent past bookings
+        if (new Date(bookingDate) < new Date()) {
+            return res.status(400).json({ message: 'Booking date and time cannot be in the past.' });
+        }
+
         const booking = new Booking({
             userId: req.user.id,
             providerId,

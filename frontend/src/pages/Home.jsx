@@ -406,10 +406,11 @@ const Home = () => {
                                 required
                             />
                             <Input 
-                                label="Date" 
-                                type="date"
+                                label="Execution Date & Time" 
+                                type="datetime-local"
                                 value={bookingModal.date} 
                                 onChange={(e) => setBookingModal({...bookingModal, date: e.target.value})} 
+                                min={new Date().toISOString().slice(0, 16)}
                                 required
                             />
                             <div className="flex justify-end gap-3 pt-2">
