@@ -29,4 +29,49 @@ const reviewSchema = new mongoose.Schema({
     timestamps: true,
 });
 
+// Static method to calculate average rating
+reviewSchema.statics.calculateAverageRating = async function(providerId) {
+    const stats = await this.aggregate([
+        {
+            $match: { providerId }
+        },
+        {
+            $group: {
+                _id: '$providerId',
+                nRating: { $sum: 1 },
+                avgRating: { $avg: '$rating' }
+            }
+        }
+    ]);
+
+    if (stats.length > 0) {
+        await mongoose.model('Provider').findByIdAndUpdate(providerId, {
+            totalReviews: stats[0].nRating,
+            averageRating: stats[0].avgRating
+        });
+    } else {
+        await mongoose.model('Provider').findByIdAndUpdate(providerId, {
+            totalReviews: 0,
+            averageRating: 0
+        });
+    }
+};
+
+// Call calculateAverageRating after save
+reviewSchema.post('save', function() {
+    this.constructor.calculateAverageRating(this.providerId);
+});
+
+// Call calculateAverageRating before remove
+reviewSchema.post('remove', function() {
+    this.constructor.calculateAverageRating(this.providerId);
+});
+
+// Also handle findOneAndDelete and findOneAndRemove which are common in modern Mongoose
+reviewSchema.post(/^findOneAnd/, async function(doc) {
+    if (doc) {
+        await doc.constructor.calculateAverageRating(doc.providerId);
+    }
+});
+
 module.exports = mongoose.model('Review', reviewSchema);

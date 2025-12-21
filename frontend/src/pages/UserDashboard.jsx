@@ -38,6 +38,7 @@ const UserDashboard = () => {
             });
             setReviewModal({ open: false, bookingId: null, rating: 5, comment: '' });
             alert('Review submitted!');
+            fetchBookings(); // Refresh list to show 'Reviewed' status
         } catch (error) {
             alert(error.response?.data?.message || 'Error submitting review');
         }
@@ -97,12 +98,16 @@ const UserDashboard = () => {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             {booking.status === 'completed' && (
-                                                <button 
-                                                    onClick={() => setReviewModal({ ...reviewModal, open: true, bookingId: booking._id })}
-                                                    className="bg-primary/10 text-primary hover:bg-primary hover:text-white px-4 py-2 rounded-lg transition font-bold"
-                                                >
-                                                    Leave Review
-                                                </button>
+                                                booking.isReviewed ? (
+                                                    <span className="text-gray-400 font-bold px-4 py-2">Reviewed</span>
+                                                ) : (
+                                                    <button 
+                                                        onClick={() => setReviewModal({ ...reviewModal, open: true, bookingId: booking._id })}
+                                                        className="bg-primary/10 text-primary hover:bg-primary hover:text-white px-4 py-2 rounded-lg transition font-bold"
+                                                    >
+                                                        Leave Review
+                                                    </button>
+                                                )
                                             )}
                                         </td>
                                     </tr>

@@ -477,13 +477,14 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const endpoint = 
-                activeTab === 'users' ? '/admin/users' : 
-                activeTab === 'providers' ? '/admin/providers' : 
-                activeTab === 'bookings' ? '/admin/bookings' :
-                '/feedback'; // Fixed: removed redundant /api
-            const res = await api.get(endpoint);
+            let res;
+            if (activeTab === 'users') res = await api.get('/admin/users');
+            else if (activeTab === 'providers') res = await api.get('/admin/providers');
+            else if (activeTab === 'bookings') res = await api.get('/bookings');
+            else if (activeTab === 'reviews') res = await api.get('/admin/reviews');
+            else if (activeTab === 'feedback') res = await api.get('/feedback');
             setData(res.data);
+            setSelectedIds([]);
         } catch (error) {
             console.error(error);
         } finally {
@@ -492,19 +493,14 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this item? This action cannot be undone.')) return;
-        
+        if (!window.confirm(`Are you sure you want to delete this ${activeTab.slice(0, -1)}?`)) return;
         try {
-            const endpoint = 
-                activeTab === 'users' ? `/admin/users/${id}` : 
-                activeTab === 'providers' ? `/admin/providers/${id}` : 
-                activeTab === 'bookings' ? `/admin/bookings/${id}` :
-                `/feedback/${id}`; // Fixed: removed redundant /api
-            await api.delete(endpoint);
-            
-            // Optimistic update
-            setData(data.filter(item => item._id !== id));
-            if (onAction) onAction(); // Refresh parent stats
+            if (activeTab === 'users') await api.delete(`/admin/users/${id}`);
+            else if (activeTab === 'providers') await api.delete(`/admin/providers/${id}`);
+            else if (activeTab === 'bookings') await api.delete(`/admin/bookings/${id}`);
+            else if (activeTab === 'reviews') await api.delete(`/admin/reviews/${id}`);
+            else if (activeTab === 'feedback') await api.delete(`/feedback/${id}`);
+            fetchData();
         } catch (error) {
             alert('Error deleting item');
             console.error(error);
@@ -639,6 +635,15 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
                                 <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Actions</th>
                             </tr>
                         )}
+                        {activeTab === 'reviews' && (
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Provider</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Client</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Rating</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Comment</th>
+                                <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Actions</th>
+                            </tr>
+                        )}
                         {activeTab === 'feedback' && (
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">User</th>
@@ -750,6 +755,17 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
                                         <td className="px-6 py-4 text-sm text-gray-500">{item.service || 'N/A'}</td>
                                         <td className="px-6 py-4 text-sm text-gray-500">{item.bookingDate ? new Date(item.bookingDate).toLocaleDateString() : 'N/A'}</td>
                                         <td className="px-6 py-4 text-sm text-gray-500 capitalize">{item.status || 'pending'}</td>
+                                        <td className="px-6 py-4 text-right">
+                                            <button onClick={() => handleDelete(item._id)} className="text-red-500 hover:text-red-700 text-sm font-medium">Delete</button>
+                                        </td>
+                                    </>
+                                )}
+                                {activeTab === 'reviews' && (
+                                    <>
+                                        <td className="px-6 py-4 text-sm font-medium text-gray-900">{item.providerId?.userId?.name || 'Unknown'}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-500">{item.userId?.name || 'Anonymous'}</td>
+                                        <td className="px-6 py-4 text-sm font-bold text-yellow-500">{item.rating} ★</td>
+                                        <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">{item.comment}</td>
                                         <td className="px-6 py-4 text-right">
                                             <button onClick={() => handleDelete(item._id)} className="text-red-500 hover:text-red-700 text-sm font-medium">Delete</button>
                                         </td>

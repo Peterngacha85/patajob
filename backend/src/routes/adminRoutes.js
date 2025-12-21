@@ -36,4 +36,7 @@ router.get('/providers', getAllProviders);
 router.delete('/providers/:id', deleteProvider);
 router.delete('/providers/:id/services/:service', require('../controllers/adminController').deleteProviderService);
 
+router.get('/reviews', require('../controllers/adminController').getAllReviews);
+router.delete('/reviews/:id', require('../controllers/adminController').deleteReview);
+
 module.exports = router;

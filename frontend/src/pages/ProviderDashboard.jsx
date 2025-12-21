@@ -24,10 +24,17 @@ const ProviderDashboard = () => {
                 >
                     Booking Requests
                 </button>
+                <button 
+                    className={`px-4 py-2 font-medium ${activeTab === 'reviews' ? 'border-b-2 border-accent text-accent' : 'text-gray-500'}`}
+                    onClick={() => setActiveTab('reviews')}
+                >
+                    My Reviews
+                </button>
             </div>
 
             {activeTab === 'profile' && <ProfileSettings />}
             {activeTab === 'bookings' && <BookingRequests />}
+            {activeTab === 'reviews' && <ProviderReviews />}
         </div>
     );
 };
@@ -336,6 +343,65 @@ const BookingRequests = () => {
                 </tbody>
             </table>
             {bookings.length === 0 && <div className="p-6 text-center text-gray-500">No booking requests found.</div>}
+        </div>
+    );
+};
+
+const ProviderReviews = () => {
+    const { user } = useContext(AuthContext);
+    const [reviews, setReviews] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchReviews = async () => {
+            try {
+                // We need the provider ID, not user ID.
+                const providerRes = await api.get('/providers/me');
+                const res = await api.get(`/reviews/${providerRes.data._id}`);
+                setReviews(res.data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchReviews();
+    }, []);
+
+    if (loading) return <div className="p-8 text-center text-gray-500">Loading reviews...</div>;
+
+    return (
+        <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">
+            <h2 className="text-xl font-bold mb-6 text-gray-800 border-b pb-4">Client Feedback</h2>
+            
+            {reviews.length > 0 ? (
+                <div className="grid gap-6">
+                    {reviews.map((review) => (
+                        <div key={review._id} className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+                            <div className="flex justify-between items-start mb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
+                                        {review.userId?.name?.charAt(0) || '?'}
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-gray-800">{review.userId?.name || 'Anonymous'}</p>
+                                        <p className="text-xs text-gray-400">{new Date(review.createdAt).toLocaleDateString()}</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center text-yellow-500 bg-white px-3 py-1.5 rounded-xl shadow-sm border border-gray-100">
+                                    <Star size={16} fill="currentColor" className="mr-1.5" />
+                                    <span className="font-black text-sm">{review.rating}</span>
+                                </div>
+                            </div>
+                            <p className="text-gray-600 italic">"{review.comment}"</p>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="text-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                    <p className="text-gray-400 font-medium">No reviews yet. Complete bookings to get feedback from clients!</p>
+                </div>
+            )}
         </div>
     );
 };

@@ -28,27 +28,78 @@ const createBooking = async (req, res) => {
 // @access Private
 const getBookings = async (req, res) => {
     try {
-        let bookings;
+        let matchQuery = {};
         if (req.user.role === 'provider') {
-            // Find provider profile first
             const provider = await Provider.findOne({ userId: req.user.id });
             if (!provider) return res.status(404).json({ message: 'Provider profile not found' });
-            bookings = await Booking.find({ providerId: provider._id })
-                .populate('userId', 'name email')
-                .populate({
-                    path: 'providerId',
-                    populate: { path: 'userId', select: 'name email' }
-                });
+            matchQuery = { providerId: provider._id };
         } else {
-             bookings = await Booking.find({ userId: req.user.id })
-                .populate('userId', 'name email')
-                .populate({
-                    path: 'providerId',
-                    populate: { path: 'userId', select: 'name email' }
-                });
+            matchQuery = { userId: new require('mongoose').Types.ObjectId(req.user.id) };
         }
-        res.json(bookings);
+
+        const bookings = await Booking.aggregate([
+            { $match: matchQuery },
+            {
+                $lookup: {
+                    from: 'reviews',
+                    localField: '_id',
+                    foreignField: 'bookingId',
+                    as: 'reviews'
+                }
+            },
+            {
+                $addFields: {
+                    isReviewed: { $gt: [{ $size: '$reviews' }, 0] }
+                }
+            },
+            { $unset: 'reviews' },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'userId'
+                }
+            },
+            { $unwind: '$userId' },
+            {
+                $lookup: {
+                    from: 'providers',
+                    localField: 'providerId',
+                    foreignField: '_id',
+                    as: 'providerId'
+                }
+            },
+            { $unwind: '$providerId' },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'providerId.userId',
+                    foreignField: '_id',
+                    as: 'providerUserId'
+                }
+            },
+            { $unwind: '$providerUserId' },
+            {
+                $project: {
+                    'userId.password': 0,
+                    'providerUserId.password': 0,
+                }
+            }
+        ]);
+
+        // Re-format the population to match the expected frontend structure
+        const formattedBookings = bookings.map(b => ({
+            ...b,
+            providerId: {
+                ...b.providerId,
+                userId: b.providerUserId
+            }
+        }));
+
+        res.json(formattedBookings);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ message: error.message });
     }
 };

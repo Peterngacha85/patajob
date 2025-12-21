@@ -36,13 +36,6 @@ const createReview = async (req, res) => {
 
         await review.save();
 
-        // Update provider rating
-        const provider = await Provider.findById(booking.providerId);
-        const reviews = await Review.find({ providerId: booking.providerId });
-        provider.totalReviews = reviews.length;
-        provider.averageRating = reviews.reduce((acc, item) => item.rating + acc, 0) / reviews.length;
-        await provider.save();
-
         res.status(201).json(review);
     } catch (error) {
         res.status(500).json({ message: error.message });

@@ -243,6 +243,41 @@ const bulkDeleteUsers = async (req, res) => {
     }
 };
 
+const Review = require('../models/Review');
+
+// @desc Get all reviews
+// @route GET /api/admin/reviews
+// @access Private/Admin
+const getAllReviews = async (req, res) => {
+    try {
+        const reviews = await Review.find({})
+            .populate('userId', 'name email profilePicture')
+            .populate({
+                path: 'providerId',
+                populate: { path: 'userId', select: 'name profilePicture' }
+            })
+            .sort({ createdAt: -1 });
+        res.json(reviews);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc Delete review
+// @route DELETE /api/admin/reviews/:id
+// @access Private/Admin
+const deleteReview = async (req, res) => {
+    try {
+        const review = await Review.findById(req.params.id);
+        if (!review) return res.status(404).json({ message: 'Review not found' });
+
+        await Review.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Review deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = { 
     getPendingProviders, 
     verifyProvider, 
@@ -251,9 +286,11 @@ module.exports = {
     getDashboardStats, 
     getAllBookings, 
     getAllProviders,
+    getAllReviews,
     deleteUser,
     deleteProvider,
     deleteBooking,
+    deleteReview,
     deleteProviderService,
     bulkVerifyUsers,
     bulkDeleteUsers
