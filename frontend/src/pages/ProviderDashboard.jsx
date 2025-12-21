@@ -3,6 +3,7 @@ import api from '../services/api';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 import AuthContext from '../context/AuthContext';
+import { showToast, confirmAction } from '../utils/swal';
 
 const ProviderDashboard = () => {
     const [activeTab, setActiveTab] = useState('profile');
@@ -100,7 +101,7 @@ const ProfileSettings = () => {
             setFormData(prev => ({ ...prev, profilePicture: res.data.imageUrl }));
         } catch (error) {
             console.error(error);
-            alert('Failed to upload image');
+            showToast('error', 'Failed to upload image');
         } finally {
             setUploading(false);
         }
@@ -130,11 +131,11 @@ const ProfileSettings = () => {
                 whatsapp: formData.whatsapp 
             });
 
-            setMsg({ text: 'Profile updated successfully!', type: 'success' });
+            showToast('success', 'Profile updated successfully!');
             setFormData(prev => ({ ...prev, password: '' })); // Clear password
         } catch (error) {
             console.error(error);
-            setMsg({ text: error.response?.data?.message || 'Error updating profile', type: 'error' });
+            showToast('error', error.response?.data?.message || 'Error updating profile');
         } finally {
             setLoading(false);
         }
@@ -289,12 +290,18 @@ const BookingRequests = () => {
     }, []);
 
     const handleStatusUpdate = async (id, status) => {
+        const confirmed = await confirmAction(
+            'Update Status',
+            `Are you sure you want to ${status} this booking?`
+        );
+        if (!confirmed) return;
         try {
             await api.put(`/bookings/${id}/status`, { status });
             fetchBookings(); // Refresh
+            showToast('success', `Booking ${status}`);
         } catch (error) {
             console.error(error);
-            alert('Error updating status');
+            showToast('error', 'Error updating status');
         }
     };
 

@@ -5,6 +5,7 @@ import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 import { MapPin, Star, Search, Phone, Calendar } from 'lucide-react';
 import { COUNTIES, SERVICES } from '../constants/data';
+import { showToast, confirmAction } from '../utils/swal';
 
 const Home = () => {
     const formatWhatsAppLink = (phone) => {
@@ -55,14 +56,19 @@ const Home = () => {
                 bookingDate: bookingModal.date
             });
             setBookingModal({ ...bookingModal, open: false });
-            alert('Booking request sent successfully!');
+            showToast('success', 'Booking request sent successfully!');
         } catch (error) {
             if (error.response?.status === 401 || error.response?.status === 403) {
-                if (window.confirm('Kindly log in to book this service provider. It only takes a minute! Would you like to go to the login page now?')) {
+                const confirmed = await confirmAction(
+                    'Login Required',
+                    'Kindly log in to book this service provider. It only takes a minute!',
+                    'Go to Login'
+                );
+                if (confirmed) {
                     navigate('/login');
                 }
             } else {
-                alert(error.response?.data?.message || 'Error sending booking request. Please try again.');
+                showToast('error', error.response?.data?.message || 'Error sending booking request.');
             }
         }
     };

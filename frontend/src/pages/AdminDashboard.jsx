@@ -1,9 +1,5 @@
-import { useState, useEffect, useContext } from 'react';
-import api from '../services/api';
-import Button from '../components/common/Button';
-import Input from '../components/common/Input';
-import AuthContext from '../context/AuthContext';
 import { Users, Briefcase, Calendar, AlertCircle, CheckCircle, XCircle, User, MessageSquare, Star } from 'lucide-react';
+import { showToast, confirmAction } from '../utils/swal';
 
 const AdminDashboard = () => {
     const { user, updateUser } = useContext(AuthContext); 
@@ -32,12 +28,17 @@ const AdminDashboard = () => {
     }, []);
 
     const handleVerify = async (id) => {
-        if (!window.confirm('Are you sure you want to verify this provider?')) return;
+        const confirmed = await confirmAction(
+            'Verify Provider',
+            'Are you sure you want to verify this provider?'
+        );
+        if (!confirmed) return;
         try {
             await api.put(`/admin/verify-provider/${id}`);
-            fetchData(); // Refresh all data
+            fetchData();
+            showToast('success', 'Provider verified successfully!');
         } catch (error) {
-            alert('Error verifying provider');
+            showToast('error', 'Error verifying provider');
         }
     };
 
@@ -150,12 +151,17 @@ const AdminDashboard = () => {
                                                 </button>
                                                 <button 
                                                     onClick={async () => {
-                                                        if (!window.confirm('Are you sure you want to reject and delete this provider application?')) return;
+                                                        const confirmed = await confirmAction(
+                                                            'Reject Application',
+                                                            'Are you sure you want to reject and delete this provider application?'
+                                                        );
+                                                        if (!confirmed) return;
                                                         try {
                                                             await api.delete(`/admin/providers/${p._id}`);
-                                                            fetchData(); // Refresh list
+                                                            fetchData();
+                                                            showToast('success', 'Application rejected');
                                                         } catch (error) {
-                                                            alert('Error deleting provider');
+                                                            showToast('error', 'Error deleting provider');
                                                         }
                                                     }} 
                                                     className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded-lg transition"
@@ -500,7 +506,12 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
     };
 
     const handleDelete = async (id) => {
-        if (!window.confirm(`Are you sure you want to delete this ${activeTab.slice(0, -1)}?`)) return;
+        const label = activeTab.slice(0, -1);
+        const confirmed = await confirmAction(
+            `Delete ${label.charAt(0).toUpperCase() + label.slice(1)}`,
+            `Are you sure you want to delete this ${label}?`
+        );
+        if (!confirmed) return;
         try {
             if (activeTab === 'users') await api.delete(`/admin/users/${id}`);
             else if (activeTab === 'providers') await api.delete(`/admin/providers/${id}`);
@@ -508,8 +519,9 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
             else if (activeTab === 'reviews') await api.delete(`/admin/reviews/${id}`);
             else if (activeTab === 'feedback') await api.delete(`/feedback/${id}`);
             fetchData();
+            showToast('success', `${label.charAt(0).toUpperCase() + label.slice(1)} deleted`);
         } catch (error) {
-            alert('Error deleting item');
+            showToast('error', 'Error deleting item');
             console.error(error);
         }
     };
@@ -520,13 +532,18 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
     };
 
     const handleUserVerify = async (id) => {
-        if (!window.confirm('Are you sure you want to approve this user?')) return;
+        const confirmed = await confirmAction(
+            'Approve User',
+            'Are you sure you want to approve this user?'
+        );
+        if (!confirmed) return;
         try {
              await api.put(`/admin/users/${id}/verify`);
              // Optimistic update
              setData(data.map(user => user._id === id ? { ...user, isEmailVerified: true } : user));
+             showToast('success', 'User approved');
         } catch (error) {
-            alert('Error verifying user');
+            showToast('error', 'Error verifying user');
         }
     };
 
@@ -557,13 +574,18 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
 
     const handleBulkVerify = async () => {
         if (!selectedIds.size) return;
-        if (!window.confirm(`Approve ${selectedIds.size} selected users?`)) return;
+        const confirmed = await confirmAction(
+            'Bulk Approval',
+            `Approve ${selectedIds.size} selected users?`
+        );
+        if (!confirmed) return;
         try {
             await api.put('/admin/users/bulk-verify', { userIds: Array.from(selectedIds) });
             fetchData();
             setSelectedIds(new Set());
+            showToast('success', `${selectedIds.size} users approved`);
         } catch (error) {
-            alert('Error verifying users');
+            showToast('error', 'Error verifying users');
         }
     };
 

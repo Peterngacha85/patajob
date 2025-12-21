@@ -3,6 +3,7 @@ import api from '../services/api';
 import AuthContext from '../context/AuthContext';
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
+import { showToast } from '../utils/swal';
 
 const UserDashboard = () => {
     const { user, updateUser } = useContext(AuthContext);
@@ -37,10 +38,10 @@ const UserDashboard = () => {
                 comment: reviewModal.comment
             });
             setReviewModal({ open: false, bookingId: null, rating: 5, comment: '' });
-            alert('Review submitted!');
+            showToast('success', 'Review submitted!');
             fetchBookings(); // Refresh list to show 'Reviewed' status
         } catch (error) {
-            alert(error.response?.data?.message || 'Error submitting review');
+            showToast('error', error.response?.data?.message || 'Error submitting review');
         }
     };
 
@@ -207,13 +208,13 @@ const ClientProfileSettings = ({ user, updateUser }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setMsg({ text: '', type: '' });
         try {
             const res = await api.put('/auth/profile', formData);
             updateUser(res.data);
-            setMsg({ text: 'Profile updated successfully!', type: 'success' });
+            showToast('success', 'Profile updated successfully');
+            setFormData(prev => ({ ...prev, password: '' })); // Clear password field after successful update
         } catch (error) {
-            setMsg({ text: error.response?.data?.message || 'Error updating profile', type: 'error' });
+            showToast('error', error.response?.data?.message || 'Error updating profile');
         } finally {
             setLoading(false);
         }
