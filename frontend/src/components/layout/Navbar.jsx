@@ -70,12 +70,6 @@ const Navbar = () => {
             {/* Mobile Menu */}
             {isOpen && (
                 <div className="md:hidden bg-white border-t border-gray-100 px-6 py-4 space-y-4 shadow-xl absolute w-full left-0">
-                    <div className="flex justify-start mb-6 border-b pb-4">
-                        <Link to="/" onClick={() => setIsOpen(false)} className="text-xl font-black tracking-tighter text-primary flex items-center gap-2">
-                            <div className="w-7 h-7 bg-accent rounded-lg flex items-center justify-center text-white text-sm">P</div>
-                            PataJob
-                        </Link>
-                    </div>
                     <Link to="/" className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Home</Link>
                     <Link to="/providers" className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Available Providers</Link>
                     <Link to="/feedback" className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Feedback</Link>
