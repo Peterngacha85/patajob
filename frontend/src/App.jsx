@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Phone, Mail, MessageCircle } from 'lucide-react';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/layout/Navbar';
 import Home from './pages/Home';
@@ -44,15 +45,29 @@ function App() {
                         <h3 className="font-bold text-lg text-primary mb-2">Contact Support</h3>
                         <p className="text-gray-600 text-sm">Need help? Verification taking too long?</p>
                     </div>
-                    <div className="flex flex-col md:flex-row gap-4 text-sm text-gray-600">
-                        <a href="tel:0739090811" className="hover:text-primary flex items-center gap-2">
-                            <span className="font-bold">Phone:</span> 0739090811
+                    <div className="flex flex-wrap justify-center md:justify-end gap-4">
+                        <a 
+                            href="tel:0739090811" 
+                            className="flex items-center gap-2 px-4 py-2 bg-primary/10 hover:bg-primary hover:text-white text-primary rounded-lg transition font-medium"
+                        >
+                            <Phone size={18} />
+                            0739090811
                         </a>
-                        <a href="mailto:Info@patajob.co.ke" className="hover:text-primary flex items-center gap-2">
-                            <span className="font-bold">Email:</span> Info@patajob.co.ke
+                        <a 
+                            href="mailto:Info@patajob.co.ke" 
+                            className="flex items-center gap-2 px-4 py-2 bg-blue-50 hover:bg-blue-500 hover:text-white text-blue-600 rounded-lg transition font-medium"
+                        >
+                            <Mail size={18} />
+                            Info@patajob.co.ke
                         </a>
-                        <a href="https://wa.me/254794108498" target="_blank" rel="noopener noreferrer" className="hover:text-green-600 flex items-center gap-2">
-                            <span className="font-bold">WhatsApp:</span> 0794108498
+                        <a 
+                            href="https://wa.me/254794108498?text=Hello%20PataJob%20Support%2C%20I%20need%20assistance%20with%20my%20account.%20Please%20help." 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="flex items-center gap-2 px-4 py-2 bg-green-50 hover:bg-green-500 hover:text-white text-green-600 rounded-lg transition font-medium"
+                        >
+                            <MessageCircle size={18} />
+                            WhatsApp Support
                         </a>
                     </div>
                 </div>
