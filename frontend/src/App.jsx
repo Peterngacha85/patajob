@@ -58,7 +58,7 @@ function App() {
                 </div>
                 <hr className="border-gray-100 mb-6" />
                 <div className="text-center">
-                    <p className="text-gray-600 mb-2">&copy; 2025 <span className="font-bold text-primary">PataJob</span>. All rights reserved.</p>
+                    <p className="text-gray-600 mb-2">&copy; {new Date().getFullYear()} <Link to="/" className="font-bold text-primary hover:text-accent transition">PataJob</Link>. All rights reserved.</p>
                     <p className="text-sm text-gray-500">
                         Designed and developed by <a href="https://fastweb.co.ke" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">Fastweb Technologies</a>
                     </p>
