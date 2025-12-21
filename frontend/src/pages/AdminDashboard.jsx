@@ -112,8 +112,12 @@ const AdminDashboard = () => {
                                     <tr key={p._id} className="hover:bg-gray-50 transition">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center">
-                                                <div className="flex-shrink-0 h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
-                                                    {p.userId?.name.charAt(0)}
+                                                <div className="flex-shrink-0 h-10 w-10 bg-primary/10 rounded-full overflow-hidden flex items-center justify-center text-primary font-bold border border-primary/10">
+                                                    {p.userId?.profilePicture ? (
+                                                        <img src={p.userId.profilePicture} alt="" className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        p.userId?.name.charAt(0)
+                                                    )}
                                                 </div>
                                                 <div className="ml-4">
                                                     <div className="text-sm font-medium text-gray-900">{p.userId?.name}</div>
@@ -239,11 +243,33 @@ const ProfileSection = ({ user, updateUser }) => {
         // Provider specific fields
         services: '',
         bio: '',
-        county: '',
-        town: ''
+        town: '',
+        profilePicture: user?.profilePicture || ''
     });
+    const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState(null);
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        setUploading(true);
+        try {
+            const res = await api.post('/auth/upload-avatar', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            setFormData(prev => ({ ...prev, profilePicture: res.data.imageUrl }));
+        } catch (error) {
+            console.error(error);
+            alert('Failed to upload image');
+        } finally {
+            setUploading(false);
+        }
+    };
 
     useEffect(() => {
         const fetchProviderDetails = async () => {
@@ -279,6 +305,7 @@ const ProfileSection = ({ user, updateUser }) => {
                 name: formData.name,
                 email: formData.email,
                 whatsapp: formData.whatsapp,
+                profilePicture: formData.profilePicture,
                 password: formData.password || undefined // Only send if set
             });
 
@@ -343,6 +370,31 @@ const ProfileSection = ({ user, updateUser }) => {
                     onChange={(e) => setFormData({...formData, whatsapp: e.target.value})}
                     placeholder="e.g 2547..."
                 />
+
+                <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Profile Picture</label>
+                    <div className="flex items-center gap-4">
+                        <div className="w-20 h-20 rounded-full bg-gray-200 overflow-hidden flex-shrink-0 border-2 border-primary/20">
+                            {formData.profilePicture ? (
+                                <img src={formData.profilePicture} alt="Profile" className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center text-gray-400 text-2xl font-bold">
+                                    {formData.name.charAt(0)}
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex-grow">
+                            <input 
+                                type="file" 
+                                accept="image/*" 
+                                onChange={handleImageUpload}
+                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer"
+                                disabled={uploading}
+                            />
+                            {uploading && <p className="text-xs text-primary mt-1 animate-pulse">Uploading...</p>}
+                        </div>
+                    </div>
+                </div>
 
                 <hr className="border-gray-200 my-6" />
                 <h3 className="text-lg font-bold text-gray-800 mb-4">Service Provider Details</h3>

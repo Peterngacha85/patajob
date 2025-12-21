@@ -158,9 +158,24 @@ const Providers = () => {
                         providers.map((provider) => (
                             <div key={provider._id} className="bg-white rounded-xl shadow border border-gray-100 p-6 hover:shadow-lg transition">
                                 <div className="flex justify-between items-start mb-4">
-                                    <div>
-                                        <h3 className="text-xl font-bold text-gray-800">{provider.userId?.name}</h3>
-                                        <p className="text-sm text-gray-500">{provider.services.join(', ')}</p>
+                                    <div className="flex gap-4">
+                                        <div className="w-16 h-16 rounded-lg bg-primary/10 overflow-hidden flex-shrink-0 border border-primary/10">
+                                            {provider.userId?.profilePicture ? (
+                                                <img 
+                                                    src={provider.userId.profilePicture} 
+                                                    alt={provider.userId.name} 
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-primary/40 text-2xl font-bold bg-primary/5">
+                                                    {provider.userId?.name.charAt(0)}
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <h3 className="text-xl font-bold text-gray-800">{provider.userId?.name}</h3>
+                                            <p className="text-sm text-gray-500">{provider.services.join(', ')}</p>
+                                        </div>
                                     </div>
                                     <div 
                                         onClick={() => handleViewReviews(provider)}

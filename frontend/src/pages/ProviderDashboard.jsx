@@ -44,8 +44,10 @@ const ProfileSettings = () => {
         bio: '', 
         county: '', 
         town: '', 
-        whatsapp: user?.whatsapp || '' 
+        whatsapp: user?.whatsapp || '',
+        profilePicture: user?.profilePicture || ''
     });
+    const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState({ text: '', type: '' });
 
@@ -65,13 +67,35 @@ const ProfileSettings = () => {
                 bio,
                 county: location.county,
                 town: location.town,
-                whatsapp: whatsapp || userId?.whatsapp || ''
+                whatsapp: whatsapp || userId?.whatsapp || '',
+                profilePicture: userId?.profilePicture || ''
             });
         } catch (error) {
             // If 404, it means no profile yet, which is fine
             if (error.response?.status !== 404) {
                 console.error(error);
             }
+        }
+    };
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        setUploading(true);
+        try {
+            const res = await api.post('/auth/upload-avatar', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            setFormData(prev => ({ ...prev, profilePicture: res.data.imageUrl }));
+        } catch (error) {
+            console.error(error);
+            alert('Failed to upload image');
+        } finally {
+            setUploading(false);
         }
     };
 
@@ -85,7 +109,8 @@ const ProfileSettings = () => {
                 name: formData.name,
                 email: formData.email, // Assuming email can optionally be updated
                 password: formData.password || undefined,
-                whatsapp: formData.whatsapp // Sync whatsapp
+                whatsapp: formData.whatsapp, // Sync whatsapp
+                profilePicture: formData.profilePicture
             });
             updateUser(userRes.data);
 
@@ -138,12 +163,38 @@ const ProfileSettings = () => {
                         required
                         disabled={true}
                     />
-                   <Input 
+                    <Input 
                         label="Change Password (leave blank to keep current)" 
                         type="password" 
                         value={formData.password} 
                         onChange={(e) => setFormData({...formData, password: e.target.value})} 
                     />
+
+                    <div className="mt-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Profile Picture</label>
+                        <div className="flex items-center gap-4">
+                            <div className="w-20 h-20 rounded-full bg-gray-200 overflow-hidden flex-shrink-0 border-2 border-primary/20">
+                                {formData.profilePicture ? (
+                                    <img src={formData.profilePicture} alt="Profile" className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-2xl font-bold">
+                                        {formData.name.charAt(0)}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex-grow">
+                                <input 
+                                    type="file" 
+                                    accept="image/*" 
+                                    onChange={handleImageUpload}
+                                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer"
+                                    disabled={uploading}
+                                />
+                                {uploading && <p className="text-xs text-primary mt-1 animate-pulse">Uploading to Cloudinary...</p>}
+                                <p className="text-[10px] text-gray-400 mt-1">Recommended: Square image, max 5MB</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="mb-4">

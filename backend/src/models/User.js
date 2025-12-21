@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
     emailVerificationToken: {
         type: String,
     },
+    profilePicture: {
+        type: String,
+        default: '',
+    },
 }, {
     timestamps: true,
 });

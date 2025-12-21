@@ -65,6 +65,7 @@ const loginUser = async (req, res) => {
                 email: user.email,
                 role: user.role,
                 whatsapp: user.whatsapp,
+                profilePicture: user.profilePicture,
                 token: generateToken(user.id),
             });
         } else {
@@ -107,6 +108,7 @@ const updateUserProfile = async (req, res) => {
             user.name = req.body.name || user.name;
             user.email = req.body.email || user.email;
             user.whatsapp = req.body.whatsapp || user.whatsapp;
+            user.profilePicture = req.body.profilePicture || user.profilePicture;
 
             if (req.body.password) {
                 // Check if current password is provided if strict security is needed, 
@@ -124,6 +126,7 @@ const updateUserProfile = async (req, res) => {
                 email: updatedUser.email,
                 role: updatedUser.role,
                 whatsapp: updatedUser.whatsapp,
+                profilePicture: updatedUser.profilePicture,
                 token: generateToken(updatedUser.id),
             });
         } else {
@@ -134,4 +137,20 @@ const updateUserProfile = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, updateUserProfile, verifyEmail };
+// @desc    Upload profile picture
+// @route   POST /api/auth/upload-avatar
+// @access  Private
+const uploadAvatar = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+        
+        // req.file.path contains the Cloudinary URL
+        res.json({ imageUrl: req.file.path });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { registerUser, loginUser, updateUserProfile, verifyEmail, uploadAvatar };
