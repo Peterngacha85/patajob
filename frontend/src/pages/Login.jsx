@@ -8,9 +8,18 @@ import { Loader2 } from 'lucide-react';
 const Login = () => {
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
+    const location = useLocation();
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
+    // Check for inactivity reason
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        if (params.get('reason') === 'inactivity') {
+            setError('You have been logged out due to 30 minutes of inactivity.');
+        }
+    }, [location]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

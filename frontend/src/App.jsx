@@ -13,11 +13,13 @@ import Feedback from './pages/Feedback';
 import Community from './pages/Community';
 import VerifyEmail from './pages/VerifyEmail';
 import WelcomeModal from './components/modals/WelcomeModal';
+import SessionManager from './components/common/SessionManager';
 
 function App() {
   return (
     <Router>
       <AuthProvider>
+        <SessionManager />
         <div className="min-h-screen flex flex-col bg-gray-50">
           <WelcomeModal />
           <Navbar />
