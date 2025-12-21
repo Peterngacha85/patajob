@@ -60,6 +60,8 @@ const ProfileSettings = () => {
     const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(false);
     const [msg, setMsg] = useState({ text: '', type: '' });
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [filteredServices, setFilteredServices] = useState([]);
 
     useEffect(() => {
         fetchProfile();
@@ -152,6 +154,33 @@ const ProfileSettings = () => {
         }
     };
 
+    const handleServiceInput = (e) => {
+        const value = e.target.value;
+        setFormData({...formData, services: value});
+        
+        // Get the current word being typed (after last comma)
+        const parts = value.split(',');
+        const currentWord = parts[parts.length - 1].trim();
+        
+        if (currentWord.length > 0) {
+            const matches = SERVICES.filter(service => 
+                service.toLowerCase().includes(currentWord.toLowerCase())
+            );
+            setFilteredServices(matches);
+            setShowSuggestions(matches.length > 0);
+        } else {
+            setShowSuggestions(false);
+        }
+    };
+
+    const selectSuggestion = (service) => {
+        const parts = formData.services.split(',');
+        parts[parts.length - 1] = service;
+        const newValue = parts.join(', ').trim();
+        setFormData({...formData, services: newValue + ', '});
+        setShowSuggestions(false);
+    };
+
     return (
         <div className="bg-white p-6 rounded-xl shadow-md max-w-2xl mx-auto">
             <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
@@ -208,21 +237,30 @@ const ProfileSettings = () => {
                     </div>
                 </div>
 
-                <div className="mb-4">
+                <div className="mb-4 relative">
                     <label className="block text-sm font-medium text-gray-700 mb-1">Services (comma separated)</label>
                     <input 
-                        list="services-suggestions"
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 mb-2"
                         value={formData.services} 
-                        onChange={(e) => setFormData({...formData, services: e.target.value})} 
-                        placeholder="e.g. Plumber, Electrician (start typing for suggestions)"
+                        onChange={handleServiceInput}
+                        onFocus={() => formData.services && setShowSuggestions(filteredServices.length > 0)}
+                        onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                        placeholder="Start typing to see suggestions (e.g., Plumbing, Electrical)"
                         required
                     />
-                    <datalist id="services-suggestions">
-                        {SERVICES.map(service => (
-                            <option key={service} value={service} />
-                        ))}
-                    </datalist>
+                    {showSuggestions && filteredServices.length > 0 && (
+                        <div className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                            {filteredServices.slice(0, 10).map(service => (
+                                <div
+                                    key={service}
+                                    onClick={() => selectSuggestion(service)}
+                                    className="px-4 py-2 hover:bg-primary hover:text-white cursor-pointer transition"
+                                >
+                                    {service}
+                                </div>
+                            ))}
+                        </div>
+                    )}
                     <div className="flex flex-wrap gap-2 mt-2">
                         {SERVICES.slice(0, 10).map(s => (
                             <button 
