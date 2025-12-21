@@ -57,7 +57,7 @@ const Home = () => {
             return false;
         }
 
-        if (user.role !== 'user') {
+        if (user.role !== 'user' && user.role !== 'admin') {
             await confirmAction(
                 'Hire Account Required',
                 'Only clients (those hiring) can contact service providers directly. If you are a pro, please use a client account to hire others.',
