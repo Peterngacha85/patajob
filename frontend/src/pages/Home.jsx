@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import AuthContext from '../context/AuthContext';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 import { MapPin, Star, Search, Phone, Calendar } from 'lucide-react';
@@ -8,6 +9,7 @@ import { COUNTIES, SERVICES } from '../constants/data';
 import { showToast, confirmAction } from '../utils/swal';
 
 const Home = () => {
+    const { user } = useContext(AuthContext);
     const formatWhatsAppLink = (phone) => {
         if (!phone) return "";
         let cleaned = phone.replace(/\D/g, ''); // Remove non-digits
@@ -42,9 +44,49 @@ const Home = () => {
     // Booking Modal State
     const [bookingModal, setBookingModal] = useState({ open: false, providerId: null, service: '', date: '' });
 
-    const handleBookClick = (provider) => {
+    const checkAccess = async (actionLabel) => {
+        if (!user) {
+            const confirmed = await confirmAction(
+                'Registration Required',
+                `To ${actionLabel}, you need to have a client account. Would you like to register now?`,
+                'Register Now'
+            );
+            if (confirmed) {
+                navigate('/register?role=user');
+            }
+            return false;
+        }
+
+        if (user.role !== 'user') {
+            await confirmAction(
+                'Hire Account Required',
+                'Only clients (those hiring) can contact service providers directly. If you are a pro, please use a client account to hire others.',
+                'I Understand'
+            );
+            return false;
+        }
+
+        return true;
+    };
+
+    const handleBookClick = async (provider) => {
+        const hasAccess = await checkAccess('book a service');
+        if (!hasAccess) return;
+        
         const defaultService = provider.services && provider.services.length > 0 ? provider.services[0] : '';
         setBookingModal({ open: true, providerId: provider._id, service: defaultService, date: '' });
+    };
+
+    const handleCallClick = async (phone) => {
+        const hasAccess = await checkAccess('call this pro');
+        if (!hasAccess) return;
+        window.location.href = `tel:${phone.replace(/\D/g, '')}`;
+    };
+
+    const handleWhatsAppClick = async (phone) => {
+        const hasAccess = await checkAccess('WhatsApp this pro');
+        if (!hasAccess) return;
+        window.open(formatWhatsAppLink(phone), '_blank');
     };
 
     const submitBooking = async (e) => {
@@ -316,21 +358,19 @@ const Home = () => {
                                         </div>
                                         
                                         <div className="grid grid-cols-2 gap-3 mt-auto">
-                                            <a 
-                                                href={formatWhatsAppLink(provider.whatsapp)} 
-                                                target="_blank" 
-                                                rel="noopener noreferrer"
+                                            <button 
+                                                onClick={() => handleWhatsAppClick(provider.whatsapp)}
                                                 className="flex items-center justify-center w-full px-4 py-2.5 border border-green-500 text-green-600 rounded-lg hover:bg-green-50 transition font-medium text-sm"
                                             >
                                                 WhatsApp
-                                            </a>
-                                            <a 
-                                                href={`tel:${provider.whatsapp?.replace(/\D/g, '')}`}
+                                            </button>
+                                            <button 
+                                                onClick={() => handleCallClick(provider.whatsapp)}
                                                 className="flex items-center justify-center w-full px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition font-medium text-sm gap-2"
                                             >
                                                 <Phone size={16} />
                                                 Call Now
-                                            </a>
+                                            </button>
                                             <button 
                                                 onClick={() => handleBookClick(provider)}
                                                 className="col-span-2 flex items-center justify-center w-full px-4 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition font-medium text-sm gap-2"
