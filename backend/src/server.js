@@ -9,7 +9,27 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        const allowedOrigins = [
+            process.env.FRONTEND_URL, // Production URL
+            'http://localhost:5173',  // Local frontend development (Vite default)
+            'http://localhost:3000'   // Local frontend development alternative
+        ].filter(Boolean); // Remove undefined values
+
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true, // Allow cookies to be sent with requests
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get('/', (req, res) => {
