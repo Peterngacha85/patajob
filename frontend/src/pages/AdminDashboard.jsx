@@ -12,7 +12,8 @@ const AdminDashboard = () => {
     const [stats, setStats] = useState({ totalUsers: 0, totalProviders: 0, totalBookings: 0, pendingProviders: 0 });
     const [pendingProviders, setPendingProviders] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('users');
+    const [activeTab, setActiveTab] = useState('overview');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const fetchData = async () => {
         try {
@@ -55,9 +56,107 @@ const AdminDashboard = () => {
     );
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-8 text-gray-800">Admin Dashboard</h1>
+        <div className="flex h-screen bg-gray-50 overflow-hidden font-sans">
+            {/* Sidebar toggle for mobile */}
+            <div className="md:hidden fixed top-4 left-4 z-50">
+                <button 
+                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                    className="p-2 bg-white rounded-lg shadow-md text-gray-700 hover:text-primary transition"
+                >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isSidebarOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+                    </svg>
+                </button>
+            </div>
 
+            {/* Sidebar Overlay */}
+            {isSidebarOpen && (
+                <div 
+                    className="md:hidden fixed inset-0 bg-black/50 z-40 transition-opacity"
+                    onClick={() => setIsSidebarOpen(false)}
+                ></div>
+            )}
+
+            {/* Sidebar Navigation */}
+            <aside 
+                className={`fixed md:static inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 shadow-sm flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+            >
+                <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+                    <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">Pata Job Admin</h2>
+                    {/* Mobile close button inside sidebar */}
+                    <button className="md:hidden text-gray-400 hover:text-gray-600" onClick={() => setIsSidebarOpen(false)}>
+                        <XCircle size={24} />
+                    </button>
+                </div>
+                
+                <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
+                    <NavItem 
+                        id="overview" 
+                        label="Overview" 
+                        icon={<AlertCircle size={20} />} 
+                        active={activeTab === 'overview'} 
+                        onClick={() => { setActiveTab('overview'); setIsSidebarOpen(false); }} 
+                    />
+                    <NavItem 
+                        id="users" 
+                        label="All Users" 
+                        icon={<Users size={20} />} 
+                        active={activeTab === 'users'} 
+                        onClick={() => { setActiveTab('users'); setIsSidebarOpen(false); }} 
+                    />
+                    <NavItem 
+                        id="providers" 
+                        label="All Providers" 
+                        icon={<Briefcase size={20} />} 
+                        active={activeTab === 'providers'} 
+                        onClick={() => { setActiveTab('providers'); setIsSidebarOpen(false); }} 
+                    />
+                    <NavItem 
+                        id="bookings" 
+                        label="All Bookings" 
+                        icon={<Calendar size={20} />} 
+                        active={activeTab === 'bookings'} 
+                        onClick={() => { setActiveTab('bookings'); setIsSidebarOpen(false); }} 
+                    />
+                    <NavItem 
+                        id="reviews" 
+                        label="Reviews" 
+                        icon={<Star size={20} />} 
+                        active={activeTab === 'reviews'} 
+                        onClick={() => { setActiveTab('reviews'); setIsSidebarOpen(false); }} 
+                    />
+                    <NavItem 
+                        id="feedback" 
+                        label="Feedback" 
+                        icon={<MessageSquare size={20} />} 
+                        active={activeTab === 'feedback'} 
+                        onClick={() => { setActiveTab('feedback'); setIsSidebarOpen(false); }} 
+                    />
+                </nav>
+
+                <div className="p-4 border-t border-gray-100">
+                    <NavItem 
+                        id="profile" 
+                        label="Admin Profile" 
+                        icon={<User size={20} />} 
+                        active={activeTab === 'profile'} 
+                        onClick={() => { setActiveTab('profile'); setIsSidebarOpen(false); }} 
+                    />
+                </div>
+            </aside>
+
+            {/* Main Content Area */}
+            <main className="flex-1 overflow-y-auto">
+                <div className="container mx-auto px-4 py-8 max-w-7xl md:pt-8 pt-20">
+                    
+                    {/* Header could stay or be removed since sidebar has title */}
+                    <div className="mb-8 hidden md:block">
+                         <h1 className="text-3xl font-bold text-gray-800 tracking-tight">Dashboard Overview</h1>
+                         <p className="text-gray-500 mt-1">Manage your platform's activity, users, and service providers.</p>
+                    </div>
+
+                    {activeTab === 'overview' && (
+                        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                 <StatCard 
@@ -193,64 +292,51 @@ const AdminDashboard = () => {
                     </table>
                 </div>
             </div>
-
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="flex border-b border-gray-200">
-                    <button 
-                        onClick={() => setActiveTab('users')}
-                        className={`px-6 py-3 font-medium text-sm transition ${activeTab === 'users' ? 'border-b-2 border-primary text-primary bg-primary/5' : 'text-gray-500 hover:text-gray-700'}`}
-                    >
-                        All Users
-                    </button>
-                    <button 
-                        onClick={() => setActiveTab('providers')}
-                        className={`px-6 py-3 font-medium text-sm transition ${activeTab === 'providers' ? 'border-b-2 border-primary text-primary bg-primary/5' : 'text-gray-500 hover:text-gray-700'}`}
-                    >
-                        All Providers
-                    </button>
-                    <button 
-                        onClick={() => setActiveTab('bookings')}
-                        className={`px-6 py-3 font-medium text-sm transition ${activeTab === 'bookings' ? 'border-b-2 border-primary text-primary bg-primary/5' : 'text-gray-500 hover:text-gray-700'}`}
-                    >
-                        All Bookings
-                    </button>
-                    <button 
-                        onClick={() => setActiveTab('reviews')}
-                        className={`px-6 py-3 font-medium text-sm transition ${activeTab === 'reviews' ? 'border-b-2 border-primary text-primary bg-primary/5' : 'text-gray-500 hover:text-gray-700'} flex items-center gap-2`}
-                    >
-                        <Star size={16} />
-                        Reviews
-                    </button>
-                    <button 
-                        onClick={() => setActiveTab('profile')}
-                        className={`px-6 py-3 font-medium text-sm transition ${activeTab === 'profile' ? 'border-b-2 border-primary text-primary bg-primary/5' : 'text-gray-500 hover:text-gray-700'} flex items-center gap-2`}
-                    >
-                        <User size={16} />
-                        Profile
-                    </button>
-                    <button 
-                        onClick={() => setActiveTab('feedback')}
-                        className={`px-6 py-3 font-medium text-sm transition ${activeTab === 'feedback' ? 'border-b-2 border-primary text-primary bg-primary/5' : 'text-gray-500 hover:text-gray-700'} flex items-center gap-2`}
-                    >
-                        <MessageSquare size={16} />
-                        Feedback
-                    </button>
-                </div>
-
-                {activeTab === 'profile' ? (
-                    <ProfileSection user={user} updateUser={updateUser} />
-                ) : (
-                    <DataSection 
-                        activeTab={activeTab} 
-                        setActiveTab={setActiveTab} 
-                        onAction={fetchData} 
-                        handleVerify={handleVerify} 
-                    />
-                )}
             </div>
+            )}
+            {/* End Overview */}
+
+            {activeTab !== 'overview' && activeTab !== 'profile' && (
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <DataSection 
+                    activeTab={activeTab} 
+                    setActiveTab={setActiveTab} 
+                    onAction={fetchData} 
+                    handleVerify={handleVerify} 
+                />
+            </div>
+            )}
+
+            {activeTab === 'profile' && (
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <ProfileSection user={user} updateUser={updateUser} />
+                </div>
+            )}
+                </div>
+            </main>
         </div>
     );
 };
+
+// --- New NavItem Component ---
+const NavItem = ({ label, icon, active, onClick }) => {
+    return (
+        <button 
+            onClick={onClick}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 group ${
+                active 
+                    ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm' 
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent'
+            }`}
+        >
+            <div className={`${active ? 'text-primary' : 'text-gray-400 group-hover:text-primary transition-colors'}`}>
+                {icon}
+            </div>
+            {label}
+        </button>
+    );
+};
+// -----------------------------
 
 const ProfileSection = ({ user, updateUser }) => {
     const [formData, setFormData] = useState({
