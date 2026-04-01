@@ -5,10 +5,13 @@ require('dotenv').config();
 
 const createAdmin = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI);
+        await mongoose.connect(process.env.MONGO_URI, {
+            serverSelectionTimeoutMS: 50000, // Wait up to 50 seconds for primary
+            socketTimeoutMS: 45000,        // Close sockets after 45 seconds of inactivity
+        });
         
-        const newEmail = 'info@fastweb.co.ke';
-        const newPassword = '@Pannwangar11';
+        const newEmail = process.env.EMAIL_USER;
+        const newPassword = process.env.EMAIL_PASS;
         
         // Potential previous emails to migrate from
         const oldEmails = ['peterngacha85@gmail.com', 'peterndegwangacha@gmail.com', 'admin@lsm.com'];
