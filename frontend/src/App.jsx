@@ -14,6 +14,7 @@ import Feedback from './pages/Feedback';
 import Community from './pages/Community';
 import VerifyEmail from './pages/VerifyEmail';
 import WelcomeModal from './components/modals/WelcomeModal';
+import EmergencyAlertModal from './components/modals/EmergencyAlertModal';
 import SessionManager from './components/common/SessionManager';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <SessionManager />
         <div className="min-h-screen flex flex-col bg-gray-50">
           <WelcomeModal />
+          <EmergencyAlertModal />
           <Navbar />
           <main className="flex-grow">
             <Routes>
