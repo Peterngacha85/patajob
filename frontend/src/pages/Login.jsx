@@ -13,6 +13,7 @@ const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isPending, setIsPending] = useState(false);
 
     // Check for inactivity reason
     useEffect(() => {
@@ -22,6 +23,24 @@ const Login = () => {
         }
     }, [location]);
 
+    // Internal Polling for Pending Approval
+    useEffect(() => {
+        let interval;
+        if (isPending) {
+            interval = setInterval(async () => {
+                try {
+                    // Try to login again automatically
+                    await login(formData.email, formData.password);
+                    navigate('/'); 
+                } catch (err) {
+                    // Still pending or other error, just wait for next cycle
+                    console.log("Auto-retry pending...");
+                }
+            }, 10000); // Check every 10 seconds for faster feedback
+        }
+        return () => clearInterval(interval);
+    }, [isPending, formData, login, navigate]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -30,7 +49,11 @@ const Login = () => {
             await login(formData.email, formData.password);
             navigate('/'); 
         } catch (err) {
-            setError(err.response?.data?.message || 'Login failed');
+            const msg = err.response?.data?.message || 'Login failed';
+            setError(msg);
+            if (msg.toLowerCase().includes('pending') || msg.toLowerCase().includes('approval')) {
+                setIsPending(true);
+            }
         } finally {
             setLoading(false);
         }
@@ -47,7 +70,16 @@ const Login = () => {
                         
                         {(error.toLowerCase().includes('pending') || error.toLowerCase().includes('approval')) && (
                             <div className="bg-white/50 p-3 rounded border border-red-100 mt-2 text-xs">
-                                <p className="font-semibold mb-1">Contact Admin for fast approval:</p>
+                                <p className="font-semibold mb-2 flex items-center gap-2">
+                                    <span className="relative flex h-2 w-2">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                                    </span>
+                                    Monitoring your approval status...
+                                </p>
+                                <p className="text-gray-500 mb-2 italic">You will be logged in automatically once approved.</p>
+                                <hr className="my-2 border-red-100" />
+                                <p className="font-semibold mb-1">Contact Admin for faster approval:</p>
                                 <div className="grid grid-cols-1 gap-1">
                                     <span>📞 0739090811</span>
                                     <span>💬 0794108498 (WhatsApp)</span>
