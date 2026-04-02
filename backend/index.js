@@ -15,18 +15,22 @@ const corsOptions = {
         if (!origin) return callback(null, true);
         
         const allowedOrigins = [
-            process.env.FRONTEND_URL, // Production URL
-            'http://localhost:5173',  // Local frontend development (Vite default)
-            'http://localhost:3000'   // Local frontend development alternative
-        ].filter(Boolean); // Remove undefined values
+            process.env.FRONTEND_URL, 
+            'https://patajob.co.ke',
+            'https://www.patajob.co.ke',
+            'https://patajob.vercel.app', 
+            'http://localhost:5173',
+            'http://localhost:3000'
+        ].filter(Boolean);
 
-        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        if (allowedOrigins.indexOf(origin) !== -1) {
             callback(null, true);
         } else {
+            console.error(`CORS Error: Origin ${origin} not allowed. Allowed:`, allowedOrigins);
             callback(new Error('Not allowed by CORS'));
         }
     },
-    credentials: true, // Allow cookies to be sent with requests
+    credentials: true,
 };
 
 app.use(cors(corsOptions));
