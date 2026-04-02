@@ -579,13 +579,13 @@ const ProfileSection = ({ user, updateUser }) => {
                 </div>
 
                 <div className="mt-4">
-                     <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                     <label className="block text-sm font-medium text-gray-700 mb-1">Professional Bio</label>
                      <textarea
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
-                        rows="3"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all duration-200 min-h-[150px]"
+                        rows="6"
                         value={formData.bio}
                         onChange={(e) => setFormData({...formData, bio: e.target.value})}
-                        placeholder="Tell clients about your services..."
+                        placeholder="Describe your expertise and mission to help your clients..."
                      ></textarea>
                 </div>
                 

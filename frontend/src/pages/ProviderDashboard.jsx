@@ -299,12 +299,17 @@ const ProfileSettings = () => {
                     </div>
                 </div>
 
-                <Input 
-                    label="Bio" 
-                    value={formData.bio} 
-                    onChange={(e) => setFormData({...formData, bio: e.target.value})} 
-                    placeholder="Tell us about your services..."
-                />
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Professional Bio</label>
+                    <textarea 
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 bg-white transition-all duration-200 min-h-[150px]"
+                        rows="6"
+                        value={formData.bio} 
+                        onChange={(e) => setFormData({...formData, bio: e.target.value})} 
+                        placeholder="Tell clients about your experience, expertise, and what makes your service stand out..."
+                    ></textarea>
+                    <p className="text-[10px] text-gray-400 mt-1">A detailed bio helps you rank higher and build trust with clients.</p>
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">County</label>
