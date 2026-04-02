@@ -35,6 +35,7 @@ const createAdmin = async () => {
             admin.password = hashedPassword;
             admin.name = 'System Admin'; 
             admin.role = 'admin'; 
+            admin.isEmailVerified = true;
             if (!admin.whatsapp) admin.whatsapp = '254700000000';
             
             await admin.save();
@@ -46,6 +47,7 @@ const createAdmin = async () => {
                 email: newEmail,
                 password: hashedPassword,
                 role: 'admin',
+                isEmailVerified: true,
                 whatsapp: '254700000000'
             });
             await admin.save();
