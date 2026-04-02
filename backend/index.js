@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const connectDB = require('./config/db');
+const connectDB = require('./src/config/db');
 
 dotenv.config();
 
@@ -36,13 +36,20 @@ app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/providers', require('./routes/providerRoutes'));
-app.use('/api/bookings', require('./routes/bookingRoutes'));
-app.use('/api/reviews', require('./routes/reviewRoutes'));
-app.use('/api/admin', require('./routes/adminRoutes'));
-app.use('/api/feedback', require('./routes/feedbackRoutes'));
+app.use('/api/auth', require('./src/routes/authRoutes'));
+app.use('/api/providers', require('./src/routes/providerRoutes'));
+app.use('/api/bookings', require('./src/routes/bookingRoutes'));
+app.use('/api/reviews', require('./src/routes/reviewRoutes'));
+app.use('/api/admin', require('./src/routes/adminRoutes'));
+app.use('/api/feedback', require('./src/routes/feedbackRoutes'));
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`));
+app.listen(PORT, () => {
+    console.log(`\n\x1b[35m%s\x1b[0m`, `--------------------------------------------------`);
+    console.log(`\x1b[35m%s\x1b[0m`, `  🚀 PataJob Server is running!`);
+    console.log(`\x1b[35m%s\x1b[0m`, `  📂 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`\x1b[35m%s\x1b[0m`, `  📡 Port: ${PORT}`);
+    console.log(`\x1b[35m%s\x1b[0m`, `  🔗 URL: http://localhost:${PORT}`);
+    console.log(`\x1b[35m%s\x1b[0m`, `--------------------------------------------------\n`);
+});

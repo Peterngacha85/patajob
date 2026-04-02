@@ -1,5 +1,5 @@
 const dotenv = require('dotenv');
-const sendEmail = require('./src/utils/sendEmail');
+const sendEmail = require('../src/utils/sendEmail');
 
 // Load env vars
 dotenv.config();

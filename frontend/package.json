@@ -21,6 +21,7 @@
     "browser-image-compression": "^2.0.2",
     "esbuild": "^0.24.2",
     "lucide-react": "^0.561.0",
+    "patajob-root": "file:..",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-router-dom": "^7.11.0",
