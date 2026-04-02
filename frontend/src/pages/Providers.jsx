@@ -268,7 +268,7 @@ const Providers = () => {
                                         <span className="text-gray-400 text-xs ml-1">({provider.totalReviews || 0} reviews)</span>
                                     </div>
                                 </div>
-                                <p className="text-gray-600 mb-4 line-clamp-2">{provider.bio || 'No bio available.'}</p>
+                                <p className="text-gray-600 mb-4 line-clamp-2 whitespace-pre-wrap">{provider.bio || 'No bio available.'}</p>
                                 <div className="flex items-center text-gray-500 text-sm mb-6">
                                     <MapPin size={16} className="mr-1" />
                                     {provider.location?.town || 'Unknown'}, {provider.location?.county || 'Kenya'}
@@ -474,7 +474,7 @@ const Providers = () => {
                         {/* Bio */}
                         <div className="mb-6">
                             <h5 className="font-bold text-gray-700 mb-2">About</h5>
-                            <p className="text-gray-600 leading-relaxed">{profileModal.provider.bio || 'No bio available.'}</p>
+                            <p className="text-gray-600 leading-relaxed whitespace-pre-wrap">{profileModal.provider.bio || 'No bio available.'}</p>
                         </div>
 
                         {/* Contact & Socials */}
