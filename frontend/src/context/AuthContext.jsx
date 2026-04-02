@@ -24,6 +24,25 @@ export const AuthProvider = ({ children }) => {
         checkLoggedIn();
     }, []);
 
+    // Smart Polling for Approval Status
+    useEffect(() => {
+        let interval;
+        if (user && !user.isEmailVerified) {
+            interval = setInterval(async () => {
+                try {
+                    const res = await api.get('/auth/profile');
+                    if (res.data.isEmailVerified) {
+                        updateUser({ isEmailVerified: true });
+                        // Optional: showToast('success', 'Your account has been approved! Redirecting...');
+                    }
+                } catch (error) {
+                    console.error("Polling error:", error);
+                }
+            }, 15000); // Poll every 15 seconds
+        }
+        return () => clearInterval(interval);
+    }, [user]);
+
     const login = async (email, password) => {
         const res = await api.post('/auth/login', { email, password });
         localStorage.setItem('token', res.data.token);

@@ -179,6 +179,10 @@ const ClientProfileSettings = ({ user, updateUser }) => {
         email: user?.email || '', 
         whatsapp: user?.whatsapp || '',
         profilePicture: user?.profilePicture || '',
+        facebook: user?.facebook || '',
+        tiktok: user?.tiktok || '',
+        linkedin: user?.linkedin || '',
+        youtube: user?.youtube || '',
         password: '' 
     });
     const [uploading, setUploading] = useState(false);
@@ -193,6 +197,10 @@ const ClientProfileSettings = ({ user, updateUser }) => {
                 email: user.email || '',
                 whatsapp: user.whatsapp || '',
                 profilePicture: user.profilePicture || '',
+                facebook: user.facebook || '',
+                tiktok: user.tiktok || '',
+                linkedin: user.linkedin || '',
+                youtube: user.youtube || '',
                 password: ''
             });
         }
@@ -269,6 +277,37 @@ const ClientProfileSettings = ({ user, updateUser }) => {
                     onChange={(e) => setFormData({...formData, whatsapp: e.target.value})} 
                     required
                 />
+
+                <div className="grid md:grid-cols-2 gap-4 mt-6 p-4 bg-gray-50 rounded-2xl border border-gray-100 shadow-inner">
+                    <h4 className="col-span-full font-black text-gray-700 text-xs uppercase tracking-widest mb-2 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-share-2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+                        Social Media (Optional)
+                    </h4>
+                    <Input 
+                        label="Facebook" 
+                        placeholder="Link to profile"
+                        value={formData.facebook} 
+                        onChange={(e) => setFormData({...formData, facebook: e.target.value})} 
+                    />
+                    <Input 
+                        label="TikTok" 
+                        placeholder="Link to profile"
+                        value={formData.tiktok} 
+                        onChange={(e) => setFormData({...formData, tiktok: e.target.value})} 
+                    />
+                    <Input 
+                        label="LinkedIn" 
+                        placeholder="Link to profile"
+                        value={formData.linkedin} 
+                        onChange={(e) => setFormData({...formData, linkedin: e.target.value})} 
+                    />
+                    <Input 
+                        label="YouTube" 
+                        placeholder="Link to profile"
+                        value={formData.youtube} 
+                        onChange={(e) => setFormData({...formData, youtube: e.target.value})} 
+                    />
+                </div>
 
                 <div className="bg-gray-50 p-6 rounded-2xl border-2 border-dashed border-gray-200">
                     <Input 

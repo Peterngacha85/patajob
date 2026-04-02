@@ -53,7 +53,11 @@ const ProfileSettings = () => {
         county: '', 
         town: '', 
         whatsapp: user?.whatsapp || '',
-        profilePicture: user?.profilePicture || ''
+        profilePicture: user?.profilePicture || '',
+        facebook: user?.facebook || '',
+        tiktok: user?.tiktok || '',
+        linkedin: user?.linkedin || '',
+        youtube: user?.youtube || ''
     });
     const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -78,7 +82,11 @@ const ProfileSettings = () => {
                 county: location?.county || '',
                 town: location?.town || '',
                 whatsapp: whatsapp || userId?.whatsapp || '',
-                profilePicture: userId?.profilePicture || ''
+                profilePicture: userId?.profilePicture || '',
+                facebook: userId?.facebook || '',
+                tiktok: userId?.tiktok || '',
+                linkedin: userId?.linkedin || '',
+                youtube: userId?.youtube || ''
             });
         } catch (error) {
             // If 404, it means no profile yet, which is fine
@@ -121,7 +129,12 @@ const ProfileSettings = () => {
                 email: formData.email,
                 password: formData.password || undefined,
                 whatsapp: formData.whatsapp,
-                profilePicture: formData.profilePicture
+                profilePicture: formData.profilePicture,
+                facebook: formData.facebook,
+                tiktok: formData.tiktok,
+                linkedin: formData.linkedin,
+                youtube: formData.youtube,
+                password: formData.password || undefined // Only send if set
             });
             updateUser(userRes.data);
 
@@ -137,7 +150,11 @@ const ProfileSettings = () => {
                 bio: formData.bio,
                 county: formData.county, 
                 town: formData.town, 
-                whatsapp: formData.whatsapp 
+                whatsapp: formData.whatsapp, 
+                facebook: formData.facebook,
+                tiktok: formData.tiktok,
+                linkedin: formData.linkedin,
+                youtube: formData.youtube
             });
 
             showToast('success', 'Profile updated successfully!');
@@ -315,6 +332,37 @@ const ProfileSettings = () => {
                     placeholder="2547..."
                     required
                 />
+
+                <div className="grid md:grid-cols-2 gap-4 mt-6 p-4 bg-orange-50 rounded-2xl border border-orange-100 mb-6">
+                    <h4 className="col-span-full font-bold text-orange-900 text-sm mb-2 flex items-center gap-2">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-presentation"><path d="M2 3h20"/><path d="M21 3v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V3"/><path d="m7 21 5-5 5 5"/></svg>
+                        Social Media Links (Connect with Clients)
+                    </h4>
+                    <Input 
+                        label="Facebook" 
+                        placeholder="Link"
+                        value={formData.facebook} 
+                        onChange={(e) => setFormData({...formData, facebook: e.target.value})} 
+                    />
+                    <Input 
+                        label="TikTok" 
+                        placeholder="Link"
+                        value={formData.tiktok} 
+                        onChange={(e) => setFormData({...formData, tiktok: e.target.value})} 
+                    />
+                    <Input 
+                        label="LinkedIn" 
+                        placeholder="Link"
+                        value={formData.linkedin} 
+                        onChange={(e) => setFormData({...formData, linkedin: e.target.value})} 
+                    />
+                    <Input 
+                        label="YouTube" 
+                        placeholder="Link"
+                        value={formData.youtube} 
+                        onChange={(e) => setFormData({...formData, youtube: e.target.value})} 
+                    />
+                </div>
                 <Button type="submit" variant="accent" disabled={loading}>
                     {loading ? 'Saving...' : 'Save Profile'}
                 </Button>

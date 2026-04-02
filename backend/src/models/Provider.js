@@ -21,6 +21,22 @@ const providerSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    facebook: {
+        type: String,
+        default: '',
+    },
+    tiktok: {
+        type: String,
+        default: '',
+    },
+    linkedin: {
+        type: String,
+        default: '',
+    },
+    youtube: {
+        type: String,
+        default: '',
+    },
     isVerified: {
         type: Boolean,
         default: false,

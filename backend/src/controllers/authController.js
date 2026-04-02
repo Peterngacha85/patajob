@@ -71,7 +71,12 @@ const loginUser = async (req, res) => {
                 email: user.email,
                 role: user.role,
                 whatsapp: user.whatsapp,
+                facebook: user.facebook,
+                tiktok: user.tiktok,
+                linkedin: user.linkedin,
+                youtube: user.youtube,
                 profilePicture: user.profilePicture,
+                isEmailVerified: user.isEmailVerified,
                 token: generateToken(user.id),
             });
         } else {
@@ -113,7 +118,11 @@ const updateUserProfile = async (req, res) => {
         if (user) {
             user.name = req.body.name || user.name;
             user.email = req.body.email || user.email;
-            user.whatsapp = req.body.whatsapp || user.whatsapp;
+            user.whatsapp = req.body.whatsapp !== undefined ? req.body.whatsapp : user.whatsapp;
+            user.facebook = req.body.facebook !== undefined ? req.body.facebook : user.facebook;
+            user.tiktok = req.body.tiktok !== undefined ? req.body.tiktok : user.tiktok;
+            user.linkedin = req.body.linkedin !== undefined ? req.body.linkedin : user.linkedin;
+            user.youtube = req.body.youtube !== undefined ? req.body.youtube : user.youtube;
             user.profilePicture = req.body.profilePicture || user.profilePicture;
 
             if (req.body.password) {
@@ -132,7 +141,12 @@ const updateUserProfile = async (req, res) => {
                 email: updatedUser.email,
                 role: updatedUser.role,
                 whatsapp: updatedUser.whatsapp,
+                facebook: updatedUser.facebook,
+                tiktok: updatedUser.tiktok,
+                linkedin: updatedUser.linkedin,
+                youtube: updatedUser.youtube,
                 profilePicture: updatedUser.profilePicture,
+                isEmailVerified: updatedUser.isEmailVerified,
                 token: generateToken(updatedUser.id),
             });
         } else {
@@ -159,4 +173,32 @@ const uploadAvatar = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, updateUserProfile, verifyEmail, uploadAvatar };
+// @desc    Get user profile
+// @route   GET /api/auth/profile
+// @access  Private
+const getUserProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (user) {
+            res.json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                whatsapp: user.whatsapp,
+                facebook: user.facebook,
+                tiktok: user.tiktok,
+                linkedin: user.linkedin,
+                youtube: user.youtube,
+                profilePicture: user.profilePicture,
+                isEmailVerified: user.isEmailVerified
+            });
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { registerUser, loginUser, updateUserProfile, getUserProfile, verifyEmail, uploadAvatar };

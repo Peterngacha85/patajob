@@ -349,7 +349,11 @@ const ProfileSection = ({ user, updateUser }) => {
         services: '',
         bio: '',
         town: '',
-        profilePicture: user?.profilePicture || ''
+        profilePicture: user?.profilePicture || '',
+        facebook: user?.facebook || '',
+        tiktok: user?.tiktok || '',
+        linkedin: user?.linkedin || '',
+        youtube: user?.youtube || ''
     });
     const [uploading, setUploading] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -387,7 +391,11 @@ const ProfileSection = ({ user, updateUser }) => {
                     services: services ? services.join(', ') : '',
                     bio: bio || '',
                     county: location?.county || '',
-                    town: location?.town || ''
+                    town: location?.town || '',
+                    facebook: res.data.facebook || prev.facebook,
+                    tiktok: res.data.tiktok || prev.tiktok,
+                    linkedin: res.data.linkedin || prev.linkedin,
+                    youtube: res.data.youtube || prev.youtube
                 }));
             } catch (error) {
                 // Ignore 404 if not a provider yet
@@ -411,6 +419,10 @@ const ProfileSection = ({ user, updateUser }) => {
                 name: formData.name,
                 email: formData.email,
                 whatsapp: formData.whatsapp,
+                facebook: formData.facebook,
+                tiktok: formData.tiktok,
+                linkedin: formData.linkedin,
+                youtube: formData.youtube,
                 profilePicture: formData.profilePicture,
                 password: formData.password || undefined // Only send if set
             });
@@ -423,7 +435,11 @@ const ProfileSection = ({ user, updateUser }) => {
                         bio: formData.bio,
                         county: formData.county, 
                         town: formData.town,
-                        whatsapp: formData.whatsapp // Sync whatsapp
+                        whatsapp: formData.whatsapp, // Sync whatsapp
+                        facebook: formData.facebook,
+                        tiktok: formData.tiktok,
+                        linkedin: formData.linkedin,
+                        youtube: formData.youtube
                     });
                 } catch (provError) {
                     console.error('Error updating provider details', provError);
@@ -476,6 +492,37 @@ const ProfileSection = ({ user, updateUser }) => {
                     onChange={(e) => setFormData({...formData, whatsapp: e.target.value})}
                     placeholder="e.g 2547..."
                 />
+
+                <div className="grid md:grid-cols-2 gap-4 mt-6 p-4 bg-blue-50/50 rounded-2xl border border-blue-100">
+                    <h4 className="col-span-full font-bold text-blue-900 text-sm mb-2 flex items-center gap-2 text-base">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-share-2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>
+                        Social Media Links (Optional)
+                    </h4>
+                    <Input 
+                        label="Facebook URL" 
+                        placeholder="https://facebook.com/your-profile"
+                        value={formData.facebook} 
+                        onChange={(e) => setFormData({...formData, facebook: e.target.value})} 
+                    />
+                    <Input 
+                        label="TikTok URL" 
+                        placeholder="https://tiktok.com/@your-handle"
+                        value={formData.tiktok} 
+                        onChange={(e) => setFormData({...formData, tiktok: e.target.value})} 
+                    />
+                    <Input 
+                        label="LinkedIn URL" 
+                        placeholder="https://linkedin.com/in/your-profile"
+                        value={formData.linkedin} 
+                        onChange={(e) => setFormData({...formData, linkedin: e.target.value})} 
+                    />
+                    <Input 
+                        label="YouTube URL" 
+                        placeholder="https://youtube.com/@your-channel"
+                        value={formData.youtube} 
+                        onChange={(e) => setFormData({...formData, youtube: e.target.value})} 
+                    />
+                </div>
 
                 <div className="mt-4">
                     <label className="block text-sm font-medium text-gray-700 mb-2">Profile Picture</label>

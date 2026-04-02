@@ -34,6 +34,22 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: '',
     },
+    facebook: {
+        type: String,
+        default: '',
+    },
+    tiktok: {
+        type: String,
+        default: '',
+    },
+    linkedin: {
+        type: String,
+        default: '',
+    },
+    youtube: {
+        type: String,
+        default: '',
+    },
 }, {
     timestamps: true,
 });

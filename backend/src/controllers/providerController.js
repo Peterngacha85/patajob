@@ -5,7 +5,7 @@ const User = require('../models/User');
 // @route   POST /api/providers
 // @access  Private
 const createProviderProfile = async (req, res) => {
-    const { services, bio, county, town, whatsapp } = req.body;
+    const { services, bio, county, town, whatsapp, facebook, tiktok, linkedin, youtube } = req.body;
 
     const providerFields = {
         userId: req.user.id,
@@ -13,6 +13,10 @@ const createProviderProfile = async (req, res) => {
         bio,
         location: { county, town },
         whatsapp,
+        facebook,
+        tiktok,
+        linkedin,
+        youtube,
     };
 
     // Check if user is approved (isEmailVerified is now used as Manual Admin Approval)
@@ -71,7 +75,7 @@ const getProviders = async (req, res) => {
         }
 
         const providers = await Provider.find(query)
-            .populate('userId', 'name email profilePicture')
+            .populate('userId', 'name email profilePicture facebook tiktok linkedin youtube')
             .sort({ createdAt: -1 });
 
         res.json(providers);
@@ -86,7 +90,7 @@ const getProviders = async (req, res) => {
 // @access  Public
 const getProviderById = async (req, res) => {
     try {
-        const provider = await Provider.findById(req.params.id).populate('userId', ['name', 'email', 'whatsapp', 'profilePicture']);
+        const provider = await Provider.findById(req.params.id).populate('userId', ['name', 'email', 'whatsapp', 'facebook', 'tiktok', 'linkedin', 'youtube', 'profilePicture']);
 
         if (!provider) {
             return res.status(404).json({ message: 'Provider not found' });
@@ -107,7 +111,7 @@ const getProviderById = async (req, res) => {
 // @access  Private
 const getCurrentProvider = async (req, res) => {
     try {
-        const provider = await Provider.findOne({ userId: req.user.id }).populate('userId', ['name', 'email', 'whatsapp', 'profilePicture']);
+        const provider = await Provider.findOne({ userId: req.user.id }).populate('userId', ['name', 'email', 'whatsapp', 'facebook', 'tiktok', 'linkedin', 'youtube', 'profilePicture']);
         if (!provider) {
             return res.status(404).json({ message: 'Provider profile not found' });
         }

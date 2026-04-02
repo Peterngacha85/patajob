@@ -4,7 +4,22 @@ import api from '../services/api';
 import AuthContext from '../context/AuthContext';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
-import { MapPin, Star, Phone, Calendar, Eye } from 'lucide-react';
+import { MapPin, Star, Phone, Calendar, Eye, Facebook, Youtube, Linkedin, Share2 } from 'lucide-react';
+const TikTokIcon = ({ size = 24, className = "" }) => (
+    <svg 
+        width={size} 
+        height={size} 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        className={className}
+    >
+        <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+    </svg>
+);
 import { COUNTIES, SERVICES } from '../constants/data';
 import { showToast, confirmAction } from '../utils/swal';
 
@@ -86,6 +101,17 @@ const Providers = () => {
         const hasAccess = await checkAccess('WhatsApp this pro');
         if (!hasAccess) return;
         window.open(formatWhatsAppLink(phone), '_blank');
+    };
+
+    const handleSocialClick = async (url, platform) => {
+        const hasAccess = await checkAccess(`view this pro's ${platform}`);
+        if (!hasAccess) return;
+        
+        let targetUrl = url;
+        if (!url.startsWith('http')) {
+            targetUrl = `https://${url}`;
+        }
+        window.open(targetUrl, '_blank');
     };
 
     const submitBooking = async (e) => {
@@ -246,6 +272,30 @@ const Providers = () => {
                                 <div className="flex items-center text-gray-500 text-sm mb-6">
                                     <MapPin size={16} className="mr-1" />
                                     {provider.location?.town || 'Unknown'}, {provider.location?.county || 'Kenya'}
+                                </div>
+
+                                {/* Social Links Mini-Bar */}
+                                <div className="flex gap-3 mb-6">
+                                    {provider.userId?.facebook && (
+                                        <button onClick={() => handleSocialClick(provider.userId.facebook, 'Facebook')} className="text-blue-600 hover:scale-110 transition p-1.5 bg-blue-50 rounded-lg">
+                                            <Facebook size={18} />
+                                        </button>
+                                    )}
+                                    {provider.userId?.tiktok && (
+                                        <button onClick={() => handleSocialClick(provider.userId.tiktok, 'TikTok')} className="text-gray-900 hover:scale-110 transition p-1.5 bg-gray-100 rounded-lg">
+                                            <TikTokIcon size={18} />
+                                        </button>
+                                    )}
+                                    {provider.userId?.linkedin && (
+                                        <button onClick={() => handleSocialClick(provider.userId.linkedin, 'LinkedIn')} className="text-blue-700 hover:scale-110 transition p-1.5 bg-blue-50 rounded-lg">
+                                            <Linkedin size={18} />
+                                        </button>
+                                    )}
+                                    {provider.userId?.youtube && (
+                                        <button onClick={() => handleSocialClick(provider.userId.youtube, 'YouTube')} className="text-red-600 hover:scale-110 transition p-1.5 bg-red-50 rounded-lg">
+                                            <Youtube size={18} />
+                                        </button>
+                                    )}
                                 </div>
                                 
                                 <button 
@@ -427,10 +477,51 @@ const Providers = () => {
                             <p className="text-gray-600 leading-relaxed">{profileModal.provider.bio || 'No bio available.'}</p>
                         </div>
 
-                        {/* Contact WhatsApp */}
+                        {/* Contact & Socials */}
                         <div className="mb-6">
-                            <h5 className="font-bold text-gray-700 mb-2">Contact</h5>
-                            <p className="text-gray-600">WhatsApp: {profileModal.provider.whatsapp || 'Not provided'}</p>
+                            <h5 className="font-bold text-gray-700 mb-3">Contact & Socials</h5>
+                            <div className="flex flex-wrap gap-4">
+                                <div className="flex items-center gap-2 text-gray-600 bg-gray-50 px-4 py-2 rounded-xl">
+                                    <Phone size={16} />
+                                    <span>{profileModal.provider.whatsapp || 'Not provided'}</span>
+                                </div>
+                                {profileModal.provider.userId?.facebook && (
+                                    <button 
+                                        onClick={() => handleSocialClick(profileModal.provider.userId.facebook, 'Facebook')}
+                                        className="flex items-center gap-2 text-blue-600 bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition"
+                                    >
+                                        <Facebook size={16} />
+                                        <span className="text-sm font-medium">Facebook</span>
+                                    </button>
+                                )}
+                                {profileModal.provider.userId?.tiktok && (
+                                    <button 
+                                        onClick={() => handleSocialClick(profileModal.provider.userId.tiktok, 'TikTok')}
+                                        className="flex items-center gap-2 text-gray-900 bg-gray-100 px-4 py-2 rounded-xl hover:bg-gray-200 transition"
+                                    >
+                                        <TikTokIcon size={16} />
+                                        <span className="text-sm font-medium">TikTok</span>
+                                    </button>
+                                )}
+                                {profileModal.provider.userId?.linkedin && (
+                                    <button 
+                                        onClick={() => handleSocialClick(profileModal.provider.userId.linkedin, 'LinkedIn')}
+                                        className="flex items-center gap-2 text-blue-700 bg-blue-50 px-4 py-2 rounded-xl hover:bg-blue-100 transition"
+                                    >
+                                        <Linkedin size={16} />
+                                        <span className="text-sm font-medium">LinkedIn</span>
+                                    </button>
+                                )}
+                                {profileModal.provider.userId?.youtube && (
+                                    <button 
+                                        onClick={() => handleSocialClick(profileModal.provider.userId.youtube, 'YouTube')}
+                                        className="flex items-center gap-2 text-red-600 bg-red-50 px-4 py-2 rounded-xl hover:bg-red-100 transition"
+                                    >
+                                        <Youtube size={16} />
+                                        <span className="text-sm font-medium">YouTube</span>
+                                    </button>
+                                )}
+                            </div>
                         </div>
 
                         {/* Action Buttons */}
