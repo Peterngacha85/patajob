@@ -114,11 +114,12 @@ const getAllProviders = async (req, res) => {
 // @access Private/Admin
 const deleteUser = async (req, res) => {
     try {
-        if (req.params.id === req.user.id) {
-            return res.status(400).json({ message: 'You cannot delete your own admin account.' });
-        }
         const user = await User.findById(req.params.id);
         if (!user) return res.status(404).json({ message: 'User not found' });
+
+        if (user.email === 'info@patajob.co.ke' || req.params.id === req.user.id) {
+            return res.status(400).json({ message: 'This is a protected system admin account and cannot be deleted.' });
+        }
 
         // Cascade delete provider profile
         if (user.role === 'provider') {

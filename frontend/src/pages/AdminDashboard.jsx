@@ -783,7 +783,9 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
                         )}
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {data.map((item) => (
+                        {data
+                            .filter(item => activeTab === 'users' ? item.email !== 'info@patajob.co.ke' : true)
+                            .map((item) => (
                             <tr key={item._id} className="hover:bg-gray-50">
                                 {activeTab === 'users' && (
                                     <>
