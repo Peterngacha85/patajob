@@ -159,6 +159,67 @@ const googleAuth = async (req, res) => {
     }
 };
 
+// @desc Authenticate or register a user via Facebook Login
+// @route POST /api/auth/facebook
+const facebookAuth = async (req, res) => {
+    const { accessToken, role, whatsapp } = req.body;
+    if (!accessToken) {
+        return res.status(400).json({ message: 'Missing Facebook access token' });
+    }
+    try {
+        const appToken = `${process.env.FACEBOOK_APP_ID}|${process.env.FACEBOOK_APP_SECRET}`;
+        const debugRes = await fetch(`https://graph.facebook.com/debug_token?input_token=${accessToken}&access_token=${appToken}`);
+        const debugData = await debugRes.json();
+
+        if (!debugData.data?.is_valid || debugData.data.app_id !== process.env.FACEBOOK_APP_ID) {
+            return res.status(401).json({ message: 'Invalid Facebook token' });
+        }
+
+        const profileRes = await fetch(`https://graph.facebook.com/me?fields=id,name,email,picture.type(large)&access_token=${accessToken}`);
+        const profile = await profileRes.json();
+
+        if (!profile.email) {
+            return res.status(400).json({ message: 'Your Facebook account has no email on file. Please use email/password or Google sign-in instead.' });
+        }
+
+        const { email, name, id: facebookId, picture } = profile;
+        const pictureUrl = picture?.data?.url;
+
+        let user = await User.findOne({ email });
+
+        if (user) {
+            let changed = false;
+            if (!user.facebookId) {
+                user.facebookId = facebookId;
+                changed = true;
+            }
+            if (!user.isEmailVerified) {
+                user.isEmailVerified = true;
+                changed = true;
+            }
+            if (!user.profilePicture && pictureUrl) {
+                user.profilePicture = pictureUrl;
+                changed = true;
+            }
+            if (changed) await user.save();
+        } else {
+            user = await User.create({
+                name,
+                email,
+                facebookId,
+                role: role === 'provider' ? 'provider' : 'user',
+                whatsapp: whatsapp || '',
+                profilePicture: pictureUrl || '',
+                isEmailVerified: true,
+            });
+        }
+
+        res.json(buildUserResponse(user));
+    } catch (error) {
+        res.status(401).json({ message: 'Facebook authentication failed: ' + error.message });
+    }
+};
+
 // @desc Verify email token
 // @route GET /api/auth/verify/:token
 const verifyEmail = async (req, res) => {
@@ -273,4 +334,4 @@ const getUserProfile = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, googleAuth, updateUserProfile, getUserProfile, verifyEmail, uploadAvatar };
+module.exports = { registerUser, loginUser, googleAuth, facebookAuth, updateUserProfile, getUserProfile, verifyEmail, uploadAvatar };

@@ -5,6 +5,7 @@ import AuthContext from '../context/AuthContext';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 import GoogleAuthButton from '../components/common/GoogleAuthButton';
+import FacebookAuthButton from '../components/common/FacebookAuthButton';
 import { Loader2 } from 'lucide-react';
 
 const Register = () => {
@@ -89,7 +90,10 @@ const Register = () => {
                         </div>
                     </div>
 
-                    <GoogleAuthButton role={formData.role} onError={setError} />
+                    <div className="space-y-3">
+                        <GoogleAuthButton role={formData.role} onError={setError} />
+                        <FacebookAuthButton role={formData.role} onError={setError} />
+                    </div>
 
                     <div className="flex items-center gap-3 my-6">
                         <div className="flex-grow h-px bg-gray-200"></div>
