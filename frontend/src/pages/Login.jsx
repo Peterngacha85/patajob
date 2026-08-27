@@ -5,7 +5,6 @@ import AuthContext from '../context/AuthContext';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
 import GoogleAuthButton from '../components/common/GoogleAuthButton';
-import FacebookAuthButton from '../components/common/FacebookAuthButton';
 import { Loader2 } from 'lucide-react';
 
 const Login = () => {
@@ -121,10 +120,7 @@ const Login = () => {
                     <div className="flex-grow h-px bg-gray-200"></div>
                 </div>
 
-                <div className="space-y-3">
-                    <GoogleAuthButton role="user" onError={setError} />
-                    <FacebookAuthButton role="user" onError={setError} />
-                </div>
+                <GoogleAuthButton role="user" onError={setError} />
 
                 <div className="mt-6 text-center text-gray-600">
                     Don't have an account? <Link to="/register" className="text-accent font-medium hover:underline">Register</Link>
