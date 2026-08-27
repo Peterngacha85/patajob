@@ -12,6 +12,7 @@ import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import Feedback from './pages/Feedback';
 import Community from './pages/Community';
+import Privacy from './pages/Privacy';
 import VerifyEmail from './pages/VerifyEmail';
 import WelcomeModal from './components/modals/WelcomeModal';
 import SessionManager from './components/common/SessionManager';
@@ -38,6 +39,7 @@ function App() {
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/feedback" element={<Feedback />} />
               <Route path="/community" element={<Community />} />
+              <Route path="/privacy" element={<Privacy />} />
             </Routes>
           </main>
           <footer className="bg-white border-t border-gray-100 py-8">
@@ -75,7 +77,7 @@ function App() {
                 </div>
                 <hr className="border-gray-100 mb-6" />
                 <div className="text-center">
-                    <p className="text-gray-600 mb-2">&copy; {new Date().getFullYear()} <Link to="/" className="font-bold text-primary hover:text-accent transition">PataJob</Link>. All rights reserved.</p>
+                    <p className="text-gray-600 mb-2">&copy; {new Date().getFullYear()} <Link to="/" className="font-bold text-primary hover:text-accent transition">PataJob</Link>. All rights reserved. <Link to="/privacy" className="text-primary hover:underline">Privacy Policy</Link></p>
                     <p className="text-sm text-gray-500">
                         Designed and developed by <a href="https://fastweb.co.ke" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">Fastweb Technologies</a>
                     </p>
