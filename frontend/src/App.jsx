@@ -15,6 +15,7 @@ import Community from './pages/Community';
 import VerifyEmail from './pages/VerifyEmail';
 import WelcomeModal from './components/modals/WelcomeModal';
 import SessionManager from './components/common/SessionManager';
+import WhatsAppReminderBanner from './components/common/WhatsAppReminderBanner';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <div className="min-h-screen flex flex-col bg-gray-50">
           <WelcomeModal />
           <Navbar />
+          <WhatsAppReminderBanner />
           <main className="flex-grow">
             <Routes>
               <Route path="/" element={<Home />} />
