@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import AuthContext from '../context/AuthContext';
 import Input from '../components/common/Input';
 import Button from '../components/common/Button';
+import GoogleAuthButton from '../components/common/GoogleAuthButton';
 import { Loader2 } from 'lucide-react';
 
 const Register = () => {
@@ -67,9 +68,38 @@ const Register = () => {
                     </div>
                 )}
                 {!success && (
+                    <>
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">I want to:</label>
+                        <div className="grid grid-cols-2 gap-4">
+                            <button
+                                type="button"
+                                onClick={() => setFormData({ ...formData, role: 'user' })}
+                                className={`py-2 px-4 rounded-lg border font-medium transition ${formData.role === 'user' ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 border-gray-300'}`}
+                            >
+                                Hire a Pro
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setFormData({ ...formData, role: 'provider' })}
+                                className={`py-2 px-4 rounded-lg border font-medium transition ${formData.role === 'provider' ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 border-gray-300'}`}
+                            >
+                                Offer Services
+                            </button>
+                        </div>
+                    </div>
+
+                    <GoogleAuthButton role={formData.role} onError={setError} />
+
+                    <div className="flex items-center gap-3 my-6">
+                        <div className="flex-grow h-px bg-gray-200"></div>
+                        <span className="text-xs text-gray-400 uppercase tracking-wider">Or sign up with email</span>
+                        <div className="flex-grow h-px bg-gray-200"></div>
+                    </div>
+
                     <form onSubmit={handleSubmit}>
-                    <Input 
-                        label="Full Name" 
+                    <Input
+                        label="Full Name"
                         value={formData.name} 
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })} 
                         required 
@@ -97,27 +127,6 @@ const Register = () => {
                         placeholder="e.g 2547..."
                         required 
                     />
-                    
-                    {/* Show role selection always, with pre-selection if from URL */}
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">I want to:</label>
-                        <div className="grid grid-cols-2 gap-4">
-                            <button
-                                type="button"
-                                onClick={() => setFormData({ ...formData, role: 'user' })}
-                                className={`py-2 px-4 rounded-lg border font-medium transition ${formData.role === 'user' ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 border-gray-300'}`}
-                            >
-                                Hire a Pro
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setFormData({ ...formData, role: 'provider' })}
-                                className={`py-2 px-4 rounded-lg border font-medium transition ${formData.role === 'provider' ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 border-gray-300'}`}
-                            >
-                                Offer Services
-                            </button>
-                        </div>
-                    </div>
 
                     <Button type="submit" variant="accent" className="w-full flex items-center justify-center gap-2" disabled={loading}>
                         {loading ? (
@@ -127,7 +136,8 @@ const Register = () => {
                             </>
                         ) : 'Register'}
                     </Button>
-                </form>
+                    </form>
+                    </>
                 )}
                 <div className="mt-6 text-center text-gray-600">
                     Already have an account? <Link to="/login" className="text-accent font-medium hover:underline">Login</Link>

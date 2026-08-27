@@ -3,10 +3,28 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const sendEmail = require('../utils/sendEmail');
+const { OAuth2Client } = require('google-auth-library');
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
+
+const buildUserResponse = (user) => ({
+    _id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    whatsapp: user.whatsapp,
+    facebook: user.facebook,
+    tiktok: user.tiktok,
+    linkedin: user.linkedin,
+    youtube: user.youtube,
+    profilePicture: user.profilePicture,
+    isEmailVerified: user.isEmailVerified,
+    token: generateToken(user.id),
+});
 
 // @desc Register new user
 // @route POST /api/auth/register
@@ -84,6 +102,60 @@ const loginUser = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc Authenticate or register a user via Google Sign-In
+// @route POST /api/auth/google
+const googleAuth = async (req, res) => {
+    const { credential, role, whatsapp } = req.body;
+    if (!credential) {
+        return res.status(400).json({ message: 'Missing Google credential' });
+    }
+    try {
+        const ticket = await googleClient.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        const { email, name, picture, sub: googleId, email_verified } = payload;
+
+        if (!email_verified) {
+            return res.status(401).json({ message: 'Google account email is not verified' });
+        }
+
+        let user = await User.findOne({ email });
+
+        if (user) {
+            let changed = false;
+            if (!user.googleId) {
+                user.googleId = googleId;
+                changed = true;
+            }
+            if (!user.isEmailVerified) {
+                user.isEmailVerified = true;
+                changed = true;
+            }
+            if (!user.profilePicture && picture) {
+                user.profilePicture = picture;
+                changed = true;
+            }
+            if (changed) await user.save();
+        } else {
+            user = await User.create({
+                name,
+                email,
+                googleId,
+                role: role === 'provider' ? 'provider' : 'user',
+                whatsapp: whatsapp || '',
+                profilePicture: picture || '',
+                isEmailVerified: true,
+            });
+        }
+
+        res.json(buildUserResponse(user));
+    } catch (error) {
+        res.status(401).json({ message: 'Google authentication failed: ' + error.message });
     }
 };
 
@@ -201,4 +273,4 @@ const getUserProfile = async (req, res) => {
     }
 };
 
-module.exports = { registerUser, loginUser, updateUserProfile, getUserProfile, verifyEmail, uploadAvatar };
+module.exports = { registerUser, loginUser, googleAuth, updateUserProfile, getUserProfile, verifyEmail, uploadAvatar };
