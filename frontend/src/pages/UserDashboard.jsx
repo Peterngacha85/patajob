@@ -86,7 +86,8 @@ const UserDashboard = () => {
 
             {activeTab === 'bookings' ? (
                 <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-                    <div className="overflow-x-auto">
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block overflow-x-auto">
                         <table className="min-w-full divide-y divide-gray-200">
                             <thead className="bg-gray-50">
                                 <tr>
@@ -107,9 +108,9 @@ const UserDashboard = () => {
                                         <td className="px-6 py-4 whitespace-nowrap text-gray-600">{new Date(booking.bookingDate).toLocaleDateString()}</td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <span className={`px-3 py-1 inline-flex text-xs leading-5 font-black rounded-full shadow-sm
-                                                ${booking.status === 'completed' ? 'bg-green-100 text-green-700' : 
-                                                booking.status === 'accepted' ? 'bg-blue-100 text-blue-700' : 
-                                                booking.status === 'cancelled' ? 'bg-red-100 text-red-700' : 
+                                                ${booking.status === 'completed' ? 'bg-green-100 text-green-700' :
+                                                booking.status === 'accepted' ? 'bg-blue-100 text-blue-700' :
+                                                booking.status === 'cancelled' ? 'bg-red-100 text-red-700' :
                                                 'bg-yellow-100 text-yellow-700'}`}>
                                                 {booking.status.toUpperCase()}
                                             </span>
@@ -119,7 +120,7 @@ const UserDashboard = () => {
                                                 booking.isReviewed ? (
                                                     <span className="text-gray-400 font-bold px-4 py-2">Reviewed</span>
                                                 ) : (
-                                                    <button 
+                                                    <button
                                                         onClick={() => setReviewModal({ ...reviewModal, open: true, bookingId: booking._id })}
                                                         className="bg-primary/10 text-primary hover:bg-primary hover:text-white px-4 py-2 rounded-lg transition font-bold"
                                                     >
@@ -133,6 +134,41 @@ const UserDashboard = () => {
                             </tbody>
                         </table>
                     </div>
+
+                    {/* Mobile Card View */}
+                    <div className="md:hidden divide-y divide-gray-100">
+                        {bookings.map((booking) => (
+                            <div key={booking._id} className="p-4">
+                                <div className="flex justify-between items-start mb-2 gap-2">
+                                    <div className="min-w-0">
+                                        <p className="font-bold text-gray-900 truncate">{booking.providerId?.userId?.name || 'Unknown Provider'}</p>
+                                        <p className="text-sm text-primary font-medium truncate">{booking.service}</p>
+                                    </div>
+                                    <span className={`flex-shrink-0 px-2 py-0.5 text-[10px] font-black rounded-full uppercase
+                                        ${booking.status === 'completed' ? 'bg-green-100 text-green-700' :
+                                        booking.status === 'accepted' ? 'bg-blue-100 text-blue-700' :
+                                        booking.status === 'cancelled' ? 'bg-red-100 text-red-700' :
+                                        'bg-yellow-100 text-yellow-700'}`}>
+                                        {booking.status}
+                                    </span>
+                                </div>
+                                <p className="text-xs text-gray-500 mb-3">{new Date(booking.bookingDate).toLocaleDateString()}</p>
+                                {booking.status === 'completed' && (
+                                    booking.isReviewed ? (
+                                        <span className="text-gray-400 text-sm font-bold">Reviewed</span>
+                                    ) : (
+                                        <button
+                                            onClick={() => setReviewModal({ ...reviewModal, open: true, bookingId: booking._id })}
+                                            className="w-full bg-primary/10 text-primary hover:bg-primary hover:text-white py-2 rounded-lg transition font-bold text-sm"
+                                        >
+                                            Leave Review
+                                        </button>
+                                    )
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
                     {bookings.length === 0 && (
                         <div className="p-12 text-center text-gray-500">
                             <p className="text-xl font-medium mb-2">No bookings found</p>
