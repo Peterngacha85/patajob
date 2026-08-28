@@ -3,7 +3,7 @@ import api from '../services/api';
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
 import AuthContext from '../context/AuthContext';
-import { Users, Briefcase, Calendar, AlertCircle, CheckCircle, XCircle, User, MessageSquare, Star } from 'lucide-react';
+import { Users, Briefcase, Calendar, AlertCircle, CheckCircle, XCircle, User, MessageSquare, Star, Search } from 'lucide-react';
 import { showToast, confirmAction } from '../utils/swal';
 import { compressImage } from '../utils/imageCompression';
 
@@ -104,9 +104,16 @@ const AdminDashboard = () => {
                         active={activeTab === 'users'} 
                         onClick={() => { setActiveTab('users'); setIsSidebarOpen(false); }} 
                     />
-                    <NavItem 
-                        id="providers" 
-                        label="All Providers" 
+                    <NavItem
+                        id="clients"
+                        label="Clients (Hiring)"
+                        icon={<Search size={20} />}
+                        active={activeTab === 'clients'}
+                        onClick={() => { setActiveTab('clients'); setIsSidebarOpen(false); }}
+                    />
+                    <NavItem
+                        id="providers"
+                        label="All Providers"
                         icon={<Briefcase size={20} />} 
                         active={activeTab === 'providers'} 
                         onClick={() => { setActiveTab('providers'); setIsSidebarOpen(false); }} 
@@ -635,12 +642,12 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
         setLoading(true);
         try {
             let res;
-            if (activeTab === 'users') res = await api.get('/admin/users');
+            if (activeTab === 'users' || activeTab === 'clients') res = await api.get('/admin/users');
             else if (activeTab === 'providers') res = await api.get('/admin/providers');
             else if (activeTab === 'bookings') res = await api.get('/bookings');
             else if (activeTab === 'reviews') res = await api.get('/admin/reviews');
             else if (activeTab === 'feedback') res = await api.get('/feedback');
-            setData(res.data);
+            setData(activeTab === 'clients' ? res.data.filter(u => u.role === 'user') : res.data);
             setSelectedIds(new Set());
         } catch (error) {
             console.error(error);
@@ -657,7 +664,7 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
         );
         if (!confirmed) return;
         try {
-            if (activeTab === 'users') await api.delete(`/admin/users/${id}`);
+            if (activeTab === 'users' || activeTab === 'clients') await api.delete(`/admin/users/${id}`);
             else if (activeTab === 'providers') await api.delete(`/admin/providers/${id}`);
             else if (activeTab === 'bookings') await api.delete(`/admin/bookings/${id}`);
             else if (activeTab === 'reviews') await api.delete(`/admin/reviews/${id}`);
@@ -757,7 +764,7 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
                 <div className="p-8 text-center text-gray-500">Loading data...</div>
             ) : (
                 <>
-                {activeTab === 'users' && selectedIds.size > 0 && (
+                {(activeTab === 'users' || activeTab === 'clients') && selectedIds.size > 0 && (
                     <div className="bg-blue-50 p-3 mx-4 mb-2 rounded flex justify-between items-center animate-in fade-in">
                         <span className="text-sm font-semibold text-blue-800">{selectedIds.size} selected</span>
                         <div className="flex gap-2">
@@ -778,10 +785,10 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
                 )}
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
-                        {activeTab === 'users' && (
+                        {(activeTab === 'users' || activeTab === 'clients') && (
                             <tr>
                                 <th className="px-6 py-3 text-left">
-                                    <input 
+                                    <input
                                         type="checkbox" 
                                         onChange={handleSelectAll} 
                                         checked={data.length > 0 && selectedIds.size === data.length}
@@ -836,10 +843,10 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                         {data
-                            .filter(item => activeTab === 'users' ? item.email !== 'info@patajob.co.ke' : true)
+                            .filter(item => (activeTab === 'users' || activeTab === 'clients') ? item.email !== 'info@patajob.co.ke' : true)
                             .map((item) => (
                             <tr key={item._id} className="hover:bg-gray-50">
-                                {activeTab === 'users' && (
+                                {(activeTab === 'users' || activeTab === 'clients') && (
                                     <>
                                         <td className="px-6 py-4">
                                             <input 
