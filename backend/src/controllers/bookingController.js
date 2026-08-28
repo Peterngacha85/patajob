@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Booking = require('../models/Booking');
 const Provider = require('../models/Provider');
 
@@ -47,7 +48,7 @@ const getBookings = async (req, res) => {
         }
         // Regular user sees their own bookings
         else {
-            matchQuery = { userId: new require('mongoose').Types.ObjectId(req.user.id) };
+            matchQuery = { userId: new mongoose.Types.ObjectId(req.user.id) };
         }
 
         const bookings = await Booking.aggregate([
