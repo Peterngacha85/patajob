@@ -70,14 +70,14 @@ const UserDashboard = () => {
 
             {/* Tabs */}
             <div className="flex justify-center border-b mb-8">
-                <button 
-                    className={`px-6 py-3 font-bold transition ${activeTab === 'bookings' ? 'border-b-4 border-primary text-primary' : 'text-gray-400 hover:text-gray-600'}`}
+                <button
+                    className={`px-6 py-3 font-bold transition ${activeTab === 'bookings' ? 'border-b-4 border-primary text-primary' : 'text-gray-400 hover:text-accent'}`}
                     onClick={() => setActiveTab('bookings')}
                 >
                     My Bookings
                 </button>
-                <button 
-                    className={`px-6 py-3 font-bold transition ${activeTab === 'profile' ? 'border-b-4 border-primary text-primary' : 'text-gray-400 hover:text-gray-600'}`}
+                <button
+                    className={`px-6 py-3 font-bold transition ${activeTab === 'profile' ? 'border-b-4 border-primary text-primary' : 'text-gray-400 hover:text-accent'}`}
                     onClick={() => setActiveTab('profile')}
                 >
                     Profile Settings

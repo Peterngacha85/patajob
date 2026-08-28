@@ -32,13 +32,13 @@ const ProviderDashboard = () => {
 
             <div className="flex justify-center border-b mb-6">
                 <button
-                    className={`px-4 py-2 font-medium ${activeTab === 'profile' ? 'border-b-2 border-accent text-accent' : 'text-gray-500'}`}
+                    className={`px-4 py-2 font-medium transition ${activeTab === 'profile' ? 'border-b-2 border-primary text-primary' : 'text-gray-500 hover:text-accent'}`}
                     onClick={() => setActiveTab('profile')}
                 >
                     Profile Settings
                 </button>
                 <button
-                    className={`px-4 py-2 font-medium flex items-center gap-2 ${activeTab === 'bookings' ? 'border-b-2 border-accent text-accent' : 'text-gray-500'}`}
+                    className={`px-4 py-2 font-medium flex items-center gap-2 transition ${activeTab === 'bookings' ? 'border-b-2 border-primary text-primary' : 'text-gray-500 hover:text-accent'}`}
                     onClick={() => setActiveTab('bookings')}
                 >
                     Booking Requests
@@ -48,8 +48,8 @@ const ProviderDashboard = () => {
                         </span>
                     )}
                 </button>
-                <button 
-                    className={`px-4 py-2 font-medium ${activeTab === 'reviews' ? 'border-b-2 border-accent text-accent' : 'text-gray-500'}`}
+                <button
+                    className={`px-4 py-2 font-medium transition ${activeTab === 'reviews' ? 'border-b-2 border-primary text-primary' : 'text-gray-500 hover:text-accent'}`}
                     onClick={() => setActiveTab('reviews')}
                 >
                     My Reviews

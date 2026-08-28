@@ -1,7 +1,13 @@
 import { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import { Menu, X, User as UserIcon } from 'lucide-react';
+
+const navLinkClass = ({ isActive }) =>
+    `transition ${isActive ? 'text-primary font-bold' : 'text-gray-600 hover:text-accent'}`;
+
+const mobileNavLinkClass = ({ isActive }) =>
+    `block py-2 font-medium transition ${isActive ? 'text-primary font-bold' : 'text-gray-600 hover:text-accent'}`;
 
 const Navbar = () => {
     const { user, logout } = useContext(AuthContext);
@@ -13,6 +19,9 @@ const Navbar = () => {
         navigate('/login');
     };
 
+    const dashboardPath = user?.role === 'admin' ? '/admin/dashboard' : user?.role === 'provider' ? '/provider/dashboard' : '/user/dashboard';
+    const dashboardLabel = user?.role === 'admin' ? 'Admin Dashboard' : user?.role === 'provider' ? 'Dashboard' : 'My Bookings';
+
     return (
         <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100">
             <div className="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -22,26 +31,24 @@ const Navbar = () => {
                 </Link>
                 
                 {/* Desktop Menu */}
-                <div className="hidden md:flex items-center space-x-8 font-medium text-gray-600">
-                    <Link to="/" className="hover:text-primary transition">Home</Link>
-                    <Link to="/providers" className="hover:text-primary transition">Available Providers</Link>
-                    <Link to="/feedback" className="hover:text-primary transition">Feedback</Link>
-                    <Link to="/community" className="hover:text-primary transition">Community</Link>
-                    
+                <div className="hidden md:flex items-center space-x-8 font-medium">
+                    <NavLink to="/" end className={navLinkClass}>Home</NavLink>
+                    <NavLink to="/providers" className={navLinkClass}>Available Providers</NavLink>
+                    <NavLink to="/feedback" className={navLinkClass}>Feedback</NavLink>
+                    <NavLink to="/community" className={navLinkClass}>Community</NavLink>
+
                     {user ? (
                         <>
-                            {user.role === 'provider' && <Link to="/provider/dashboard" className="text-primary font-bold hover:opacity-80 transition">Dashboard</Link>}
-                            {user.role === 'user' && <Link to="/user/dashboard" className="text-primary font-bold hover:opacity-80 transition">My Bookings</Link>}
-                            {user.role === 'admin' && <Link to="/admin/dashboard" className="text-primary font-bold hover:opacity-80 transition">Admin Dashboard</Link>}
-                            
-                            <Link 
-                                to={user.role === 'admin' ? '/admin/dashboard' : user.role === 'provider' ? '/provider/dashboard' : '/user/dashboard'} 
-                                className="text-gray-600 hover:text-primary transition flex items-center gap-1.5"
+                            <NavLink to={dashboardPath} end className={navLinkClass}>{dashboardLabel}</NavLink>
+
+                            <NavLink
+                                to={dashboardPath}
+                                className={({ isActive }) => `flex items-center gap-1.5 transition ${isActive ? 'text-primary font-bold' : 'text-gray-600 hover:text-accent'}`}
                                 title="My Profile Settings"
                             >
                                 <UserIcon size={16} />
                                 Profile
-                            </Link>
+                            </NavLink>
 
                             <div className="flex items-center gap-3 pl-4 border-l border-gray-200">
                                 <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-primary">
@@ -53,7 +60,7 @@ const Navbar = () => {
                         </>
                     ) : (
                         <>
-                            <Link to="/login" className="hover:text-primary transition">Login</Link>
+                            <NavLink to="/login" className={navLinkClass}>Login</NavLink>
                             <Link to="/register?role=user" className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-full font-bold transition shadow-md hover:shadow-lg">
                                 Get Started
                             </Link>
@@ -70,20 +77,20 @@ const Navbar = () => {
             {/* Mobile Menu */}
             {isOpen && (
                 <div className="md:hidden bg-white border-t border-gray-100 px-6 py-4 space-y-4 shadow-xl absolute w-full left-0">
-                    <Link to="/" className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Home</Link>
-                    <Link to="/providers" className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Available Providers</Link>
-                    <Link to="/feedback" className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Feedback</Link>
-                    <Link to="/community" className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Community</Link>
+                    <NavLink to="/" end className={mobileNavLinkClass} onClick={() => setIsOpen(false)}>Home</NavLink>
+                    <NavLink to="/providers" className={mobileNavLinkClass} onClick={() => setIsOpen(false)}>Available Providers</NavLink>
+                    <NavLink to="/feedback" className={mobileNavLinkClass} onClick={() => setIsOpen(false)}>Feedback</NavLink>
+                    <NavLink to="/community" className={mobileNavLinkClass} onClick={() => setIsOpen(false)}>Community</NavLink>
                     {user ? (
                         <>
-                            <Link to={user.role === 'admin' ? '/admin/dashboard' : user.role === 'provider' ? '/provider/dashboard' : '/user/dashboard'} className="block py-2 text-primary font-bold" onClick={() => setIsOpen(false)}>Dashboard</Link>
-                            <Link to={user.role === 'admin' ? '/admin/dashboard' : user.role === 'provider' ? '/provider/dashboard' : '/user/dashboard'} className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>My Profile Setting</Link>
+                            <NavLink to={dashboardPath} end className={mobileNavLinkClass} onClick={() => setIsOpen(false)}>{dashboardLabel}</NavLink>
+                            <NavLink to={dashboardPath} className={mobileNavLinkClass} onClick={() => setIsOpen(false)}>My Profile Setting</NavLink>
                             <button onClick={() => { handleLogout(); setIsOpen(false); }} className="block w-full text-left py-2 text-red-500 font-medium">Logout</button>
                         </>
                     ) : (
                         <>
-                            <Link to="/login" className="block py-2 text-gray-600 font-medium hover:text-primary" onClick={() => setIsOpen(false)}>Login</Link>
-                            <Link to="/register?role=user" className="block py-2 text-primary font-bold" onClick={() => setIsOpen(false)}>Register</Link>
+                            <NavLink to="/login" className={mobileNavLinkClass} onClick={() => setIsOpen(false)}>Login</NavLink>
+                            <NavLink to="/register?role=user" className={mobileNavLinkClass} onClick={() => setIsOpen(false)}>Register</NavLink>
                         </>
                     )}
                 </div>

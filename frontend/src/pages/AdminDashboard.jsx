@@ -335,12 +335,12 @@ const NavItem = ({ label, icon, active, onClick }) => {
         <button 
             onClick={onClick}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 group ${
-                active 
-                    ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm' 
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-transparent'
+                active
+                    ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm'
+                    : 'text-gray-600 hover:bg-accent/5 hover:text-accent border border-transparent'
             }`}
         >
-            <div className={`${active ? 'text-primary' : 'text-gray-400 group-hover:text-primary transition-colors'}`}>
+            <div className={`${active ? 'text-primary' : 'text-gray-400 group-hover:text-accent transition-colors'}`}>
                 {icon}
             </div>
             {label}
