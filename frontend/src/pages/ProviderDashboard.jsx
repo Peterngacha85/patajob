@@ -9,23 +9,43 @@ import { COUNTIES, SERVICES } from '../constants/data';
 
 const ProviderDashboard = () => {
     const [activeTab, setActiveTab] = useState('profile');
+    const [pendingCount, setPendingCount] = useState(0);
+
+    useEffect(() => {
+        const fetchPendingCount = async () => {
+            try {
+                const res = await api.get('/bookings');
+                setPendingCount(res.data.filter(b => b.status === 'pending').length);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchPendingCount();
+        const interval = setInterval(fetchPendingCount, 20000);
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-6 text-primary text-center">Provider Dashboard</h1>
-            
+
             <div className="flex justify-center border-b mb-6">
-                <button 
+                <button
                     className={`px-4 py-2 font-medium ${activeTab === 'profile' ? 'border-b-2 border-accent text-accent' : 'text-gray-500'}`}
                     onClick={() => setActiveTab('profile')}
                 >
                     Profile Settings
                 </button>
-                <button 
-                    className={`px-4 py-2 font-medium ${activeTab === 'bookings' ? 'border-b-2 border-accent text-accent' : 'text-gray-500'}`}
+                <button
+                    className={`px-4 py-2 font-medium flex items-center gap-2 ${activeTab === 'bookings' ? 'border-b-2 border-accent text-accent' : 'text-gray-500'}`}
                     onClick={() => setActiveTab('bookings')}
                 >
                     Booking Requests
+                    {pendingCount > 0 && (
+                        <span className="bg-red-500 text-white text-xs font-bold rounded-full min-w-[1.25rem] h-5 flex items-center justify-center px-1">
+                            {pendingCount}
+                        </span>
+                    )}
                 </button>
                 <button 
                     className={`px-4 py-2 font-medium ${activeTab === 'reviews' ? 'border-b-2 border-accent text-accent' : 'text-gray-500'}`}
@@ -380,10 +400,20 @@ const BookingRequests = () => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const fetchBookings = async () => {
+    const fetchBookings = async (isPoll = false) => {
         try {
             const res = await api.get('/bookings');
-            setBookings(res.data);
+            if (isPoll) {
+                setBookings(prev => {
+                    const newOnes = res.data.filter(b => !prev.find(p => p._id === b._id));
+                    newOnes.forEach(b => {
+                        showToast('success', `New booking request from ${b.userId?.name || 'a client'}!`);
+                    });
+                    return res.data;
+                });
+            } else {
+                setBookings(res.data);
+            }
         } catch (error) {
             console.error(error);
         } finally {
@@ -393,6 +423,8 @@ const BookingRequests = () => {
 
     useEffect(() => {
         fetchBookings();
+        const interval = setInterval(() => fetchBookings(true), 20000);
+        return () => clearInterval(interval);
     }, []);
 
     const handleStatusUpdate = async (id, status) => {

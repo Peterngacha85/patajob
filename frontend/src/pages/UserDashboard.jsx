@@ -15,10 +15,24 @@ const UserDashboard = () => {
     // State for review modal
     const [reviewModal, setReviewModal] = useState({ open: false, bookingId: null, rating: 5, comment: '' });
 
-    const fetchBookings = async () => {
+    const fetchBookings = async (isPoll = false) => {
         try {
             const res = await api.get('/bookings');
-            setBookings(res.data);
+            if (isPoll) {
+                setBookings(prev => {
+                    res.data.forEach(newB => {
+                        const oldB = prev.find(b => b._id === newB._id);
+                        if (oldB && oldB.status !== newB.status) {
+                            showToast('success', `Your booking with ${newB.providerId?.userId?.name || 'the provider'} is now ${newB.status}`);
+                        } else if (!oldB) {
+                            showToast('success', 'A new booking has been added to your list');
+                        }
+                    });
+                    return res.data;
+                });
+            } else {
+                setBookings(res.data);
+            }
         } catch (error) {
             console.error(error);
         } finally {
@@ -28,6 +42,8 @@ const UserDashboard = () => {
 
     useEffect(() => {
         fetchBookings();
+        const interval = setInterval(() => fetchBookings(true), 20000);
+        return () => clearInterval(interval);
     }, []);
 
     const handleReviewSubmit = async (e) => {
