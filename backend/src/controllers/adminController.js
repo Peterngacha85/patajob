@@ -6,7 +6,7 @@ const Provider = require('../models/Provider');
 // @access Private/Admin
 const getPendingProviders = async (req, res) => {
     try {
-        const providers = await Provider.find({ isVerified: false }).populate('userId', 'name email profilePicture');
+        const providers = await Provider.find({ isVerified: false }).populate('userId', 'name email profilePicture createdAt');
         res.json(providers);
     } catch (error) {
         res.status(500).json({ message: error.message });

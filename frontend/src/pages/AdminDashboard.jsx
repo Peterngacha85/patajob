@@ -206,6 +206,7 @@ const AdminDashboard = () => {
                         <thead className="bg-gray-50">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Provider Details</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Signed Up</th>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Location</th>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Services</th>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
@@ -230,6 +231,9 @@ const AdminDashboard = () => {
                                                     <div className="text-sm text-gray-500">{p.userId?.email}</div>
                                                 </div>
                                             </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {p.userId?.createdAt ? new Date(p.userId.createdAt).toLocaleDateString('en-KE', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A'}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {p.location.town}, {p.location.county}
@@ -279,7 +283,7 @@ const AdminDashboard = () => {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="5" className="px-6 py-10 text-center text-gray-500">
+                                    <td colSpan="6" className="px-6 py-10 text-center text-gray-500">
                                         <div className="flex flex-col items-center justify-center">
                                             <CheckCircle size={48} className="text-green-400 mb-2" />
                                             <p className="text-lg font-medium">All caught up!</p>
@@ -788,6 +792,7 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Email</th>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Role</th>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">WhatsApp</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Joined</th>
                                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
                                 <th className="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Actions</th>
                             </tr>
@@ -848,6 +853,9 @@ const DataSection = ({ activeTab, setActiveTab, onAction, handleVerify }) => {
                                         <td className="px-6 py-4 text-sm text-gray-500">{item.email}</td>
                                         <td className="px-6 py-4 text-sm text-gray-500 capitalize">{item.role}</td>
                                         <td className="px-6 py-4 text-sm text-gray-500">{item.whatsapp || '-'}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-500">
+                                            {item.createdAt ? new Date(item.createdAt).toLocaleDateString('en-KE', { year: 'numeric', month: 'short', day: 'numeric' }) : 'N/A'}
+                                        </td>
                                         <td className="px-6 py-4">
                                             <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${item.isEmailVerified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
                                                 {item.isEmailVerified ? 'Active' : 'Pending'}
