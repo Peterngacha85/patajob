@@ -6,6 +6,7 @@ import AuthContext from '../context/AuthContext';
 import { showToast, confirmAction } from '../utils/swal';
 import { compressImage } from '../utils/imageCompression';
 import { COUNTIES, SERVICES } from '../constants/data';
+import { Star } from 'lucide-react';
 
 const ProviderDashboard = () => {
     const [activeTab, setActiveTab] = useState('profile');
